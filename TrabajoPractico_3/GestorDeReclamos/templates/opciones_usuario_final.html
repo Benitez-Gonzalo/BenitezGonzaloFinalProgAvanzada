@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamos</title>
+</head>
+
+<body bgcolor="#000000" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+
+    <h3>Bienvenido</h3>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST">
+        <button type="submit" name="accion" value="crear_reclamo">Crear Reclamo</button>
+    </form><br>
+    <form method="POST">
+        <label for="departamento">Filtrar por Departamento:</label>
+        <input type="text" id="departamento" name="departamento" placeholder="Ingrese departamento">
+        <button type="submit" name="accion" value="listar_reclamos">Listar Reclamos</button>
+    </form>
+    <form action="{{ url_for('usuario_final', reclamos_propios='true') }}" method="GET">
+        <button type="submit" name="accion" value="reclamos_propios">Mis reclamos</button>
+    </form><br>
+    <form action="{{ url_for('logout') }}" method="get">
+        <button type="submit">Salir</button>
+    </form>
+</body>

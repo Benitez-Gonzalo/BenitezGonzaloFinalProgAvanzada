@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear reclamo</title>
+</head>
+<body>
+    <h1>Crear Reclamo</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulario para crear un nuevo reclamo -->
+    <form method="POST" action="{{ url_for('crear_reclamo') }}">
+        {% if not reclamos_similares %}
+            <label for="descripcion">Descripción del Reclamo:</label>
+            <textarea name="reclamo" maxlength="1000" required>{{ request.form.get("reclamo", "") }}</textarea>
+            <button type="submit" name="Continuar" value="true">Continuar</button>
+        {% endif %}
+    </form>
+
+    <!-- Sección de reclamos similares -->
+    {% if reclamos_similares %}
+        <h2>Reclamos similares encontrados</h2>
+        <p>Selecciona uno para adherirte o presiona "Crear nuevo reclamo" para continuar sin adherirte.</p>
+        <div>
+            {% for reclamo in reclamos_similares %}
+                <div>
+                    <li>ID: {{ reclamo.id_reclamo }}.</li>
+                    <li>Reclamo: {{ reclamo.contenido }}.</li>
+                    <li>Clasificación: {{ reclamo.departamento }}.</li>
+                    <li>Fecha de creación: {{ reclamo.fecha_y_hora | datetimeformat }}.</li>
+                </div>
+
+                <!-- Formulario para adherirse -->
+                <form method="POST" action="{{ url_for('adherirse_a_reclamo_desde_creación') }}">
+                    <input type="hidden" name="id_reclamo" value="{{ reclamo.id_reclamo }}">
+                    <button type="submit" name="adhesion_reclamo" value="true">Adherirse</button>
+                </form>
+            {% endfor %}
+        </div>
+
+        <!-- Formulario para crear nuevo reclamo a pesar de similares -->
+        <form method="POST" action="{{ url_for('crear_reclamo') }}">
+            <input type="hidden" name="reclamo" value="{{ request.form.get('reclamo', '') }}">
+            <button type="submit" name="nuevo_reclamo" value="true">Crear nuevo reclamo</button>
+        </form>
+    {% endif %}
+
+    <a href="{{ url_for('usuario_final') }}">Volver al Inicio</a>
+</body>
+</html>

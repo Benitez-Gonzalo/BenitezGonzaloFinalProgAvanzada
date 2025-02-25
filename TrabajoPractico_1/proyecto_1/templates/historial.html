@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Historial</title>
+</head>
+
+<body>
+{% for historial_de_usuario in historial_web: %}
+  <li>
+    
+    {{historial_de_usuario["usuario"]}}
+    
+    {{historial_de_usuario["aciertos"]}}/{{historial_de_usuario["num_rondas"]}}
+    
+    {{historial_de_usuario["fecha"]}}
+    
+  </li>
+{% endfor %}
+</body>

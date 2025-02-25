@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamos</title>
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    <img src="static/images/reporte.jpg" alt="" width="800" height="400"><br>
+    <a href="{{ pdf_path }}" download>Descargar reporte en formato PDF</a>
+    <a href="{{ html_path }}" download>Descargar reporte en formato HTML</a>
+
+</body>
+<a href="{{ url_for('gestion_de_jefes') }}">Volver</a>
+</html>

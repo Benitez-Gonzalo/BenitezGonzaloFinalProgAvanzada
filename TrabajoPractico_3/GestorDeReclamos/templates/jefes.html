@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamos</title>
+</head>
+<body>
+    <h1>Panel de Jefe</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Formulario con las opciones de acción -->
+    <form method="POST" action="{{ url_for('gestion_de_jefes') }}">
+        <button type="submit" name="accion" value="analitica" class="btn">Analítica</button>
+        <button type="submit" name="accion" value="manejar_reclamos" class="btn">Manejar Reclamos</button>
+        <button type="submit" name="accion" value="ayuda" class="btn">Ayuda</button>
+        <button type="submit" name="accion" value="salir" class="btn">Salir</button>
+    </form>
+</body>
+</html>

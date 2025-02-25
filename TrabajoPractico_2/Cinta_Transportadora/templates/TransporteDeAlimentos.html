@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinta Transportadora</title>
+</head>
+<body>
+    <h1 style="background-color:rgb(21, 249, 5); text-align:center;" >Actividades acuosas del cajon:</h1><br>
+    <center>
+
+        {% if aw_alimentos.aw_frutas>0.90: %}
+            <h3 style="background-color:rgb(255, 255, 0)">Frutas: {{aw_alimentos.aw_frutas}}</h3><br>
+        {% else %}
+            <h3>Frutas: {{aw_alimentos.aw_frutas}}</h3><br>
+        {% endif %}
+
+        {% if aw_alimentos.aw_kiwis>0.90: %}
+            <h3 style="background-color:rgb(255, 255, 0)">Kiwi: {{aw_alimentos.aw_kiwis}}</h3><br>
+        {% else %}
+            <h3>Kiwi: {{aw_alimentos.aw_kiwis}}</h3><br>
+        {% endif %}
+
+        {% if aw_alimentos.aw_manzanas>0.90: %}
+            <h3 style="background-color:rgb(255, 255, 0)">Manzana: {{aw_alimentos.aw_manzanas}}</h3><br>
+        {% else %}
+            <h3>Manzana: {{aw_alimentos.aw_manzanas}}</h3><br>
+        {% endif %}
+
+        {% if aw_alimentos.aw_verduras>0.90: %}
+        <h3 style="background-color:rgb(255, 255, 0)">Verduras: {{aw_alimentos.aw_verduras}}</h3><br>
+        {% else %}
+        <h3>Verduras: {{aw_alimentos.aw_verduras}}</h3><br>
+        {% endif %}
+        
+        {% if aw_alimentos.aw_papas>0.90: %}
+            <h3 style="background-color:rgb(255, 255, 0)">Papa: {{aw_alimentos.aw_papas}}</h3><br>
+        {% else %}
+            <h3>Papa: {{aw_alimentos.aw_papas}}</h3><br>
+        {% endif %}
+        
+        {% if aw_alimentos.aw_zanahorias>0.90: %}
+            <h3 style="background-color:rgb(255, 255, 0)">Zanahoria: {{aw_alimentos.aw_zanahorias}}</h3><br>
+        {% else %}
+            <h3>Zanahoria: {{aw_alimentos.aw_zanahorias}}</h3><br>
+        {% endif %}       
+
+        {% if aw_alimentos.aw_total>0.90: %}
+            <h3 style="background-color:rgb(255, 255, 0)">Total: {{aw_alimentos.aw_total}}</h3><br>
+        {% else %}
+            <h3>Total: {{aw_alimentos.aw_total}}</h3><br>
+        {% endif %}
+
+        {% for i in advertencias: %}
+            <h3 style="color: rgb(255, 0, 0);"> La {{i}} supera el 90%, verifique el cajón.</li>
+        {% endfor %}
+
+        <form action="/">
+            <br><input type="submit" value="Volver al Inicio">
+        </form>
+    </center>
+    
+</body>
+</html>

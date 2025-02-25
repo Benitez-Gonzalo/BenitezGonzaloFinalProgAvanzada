@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Manejar Reclamos</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Manejar Reclamos</h1>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+
+        <div id="lista-reclamos">
+            {% for reclamo in reclamos %}
+                <div>
+                    <ul>
+                        <li>ID Reclamo: {{ reclamo.id_reclamo }}</li>
+                        <li>ID Usuario: {{ reclamo.id_usuario }}</li>
+                        <li>Descripción: {{ reclamo.contenido }}</li>
+                        <li>Estado: {{ reclamo.estado }}</li>
+                        <li>Fecha de creación: {{ reclamo.fecha_y_hora | datetimeformat }}</li>
+                        <li>Departamento al que pertenece: {{ reclamo.departamento }}</li>
+                        <li>ID de usuarios adheridos: {{ usuarios_adheridos[reclamo.id_reclamo] | join(", ")}}</li>
+                    </ul>
+                </div>
+
+                {%if departamento == "secretaría técnica"%}
+                    <!-- Botón para modificar el departamento de un reclamo -->
+                    <form action="{{ url_for('modificar_departamento_reclamo') }}" method="GET">
+                        <!-- Campo oculto con el ID del reclamo -->
+                        <input type="hidden" name="id_reclamo" value="{{ reclamo.id_reclamo }}">
+                    
+                        <!-- Lista desplegable para los departamentos válidos -->
+                        <label for="nuevo_departamento_{{ reclamo.id_reclamo }}">Departamento:</label>
+                        <select name="nuevo_departamento" id="nuevo_departamento_{{ reclamo.id_reclamo }}">
+                            <option value="maestranza" {% if reclamo.departamento == "maestranza" %}selected{% endif %}>Maestranza</option>
+                            <option value="soporte informático" {% if reclamo.departamento == "soporte informático" %}selected{% endif %}>Soporte informático</option>
+                            <option value="secretaría técnica" {% if reclamo.departamento == "secretaría técnica" %}selected{% endif %}>Secretaría técnica</option>
+                        </select>
+                        
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" name="accion" value="cambiar_departamento">Cambiar departamento</button>
+                    </form>
+                    <!-- Botón para modificar el estado de un reclamo -->
+                    <form action="{{ url_for('modificar_estado_reclamo') }}" method="POST">
+                        <!-- Campo oculto con el ID del reclamo -->
+                        <input type="hidden" name="id_reclamo" value="{{ reclamo.id_reclamo }}">
+                        
+                        <!-- Lista desplegable para los estados válidos -->
+                        <label for="nuevo_estado_{{ reclamo.id_reclamo }}">Estado:</label>
+                        <select name="nuevo_estado" id="nuevo_estado_{{ reclamo.id_reclamo }}" onchange="toggleTiempoCampos('{{ reclamo.id_reclamo }}', this.value)">
+                            <option value="inválido" {% if reclamo.estado == "inválido" %}selected{% endif %}>Inválido</option>
+                            <option value="pendiente" {% if reclamo.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
+                            <option value="en proceso" {% if reclamo.estado == "en proceso" %}selected{% endif %}>En proceso</option>
+                            <option value="resuelto" {% if reclamo.estado == "resuelto" %}selected{% endif %}>Resuelto</option>
+                        </select>
+                        
+                        <div id="tiempo_estimado_div_{{ reclamo.id_reclamo }}" style="display: none;">
+                            <label for="tiempo_estimado_{{ reclamo.id_reclamo }}">Tiempo estimado de resolución (días):</label>
+                            <input type="number" name="tiempo_estimado" id="tiempo_estimado_{{ reclamo.id_reclamo }}" min="1" max="15">
+                        </div>
+
+                        <div id="tiempo_ocupado_div_{{ reclamo.id_reclamo }}" style="display: none;">
+                            <label for="tiempo_ocupado_{{ reclamo.id_reclamo }}">Tiempo que llevó resolverlo (días):</label>
+                            <input type="number" name="tiempo_ocupado" id="tiempo_ocupado_{{ reclamo.id_reclamo }}" min="1" max="15">
+                        </div>
+
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" name="accion" value="cambiar_estado">Cambiar estado</button>
+                    </form>
+                {% else %}
+                    <!-- Botón para modificar el estado de un reclamo -->
+                    <form action="{{ url_for('modificar_estado_reclamo') }}" method="POST">
+                        <!-- Campo oculto con el ID del reclamo -->
+                        <input type="hidden" name="id_reclamo" value="{{ reclamo.id_reclamo }}">
+                        
+                        <!-- Lista desplegable para los estados válidos -->
+                        <label for="nuevo_estado_{{reclamo.id_reclamo}}">Estado:</label>
+                        <select name="nuevo_estado" id="nuevo_estado_{{reclamo.id_reclamo}}" onchange="toggleTiempoCampos('{{ reclamo.id_reclamo }}', this.value)">
+                            <option value="inválido" {% if reclamo.estado == "inválido" %}selected{% endif %}>Inválido</option>
+                            <option value="pendiente" {% if reclamo.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
+                            <option value="en proceso" {% if reclamo.estado == "en proceso" %}selected{% endif %}>En proceso</option>
+                            <option value="resuelto" {% if reclamo.estado == "resuelto" %}selected{% endif %}>Resuelto</option>
+                        </select>
+                        
+                        <div id="tiempo_estimado_div_{{ reclamo.id_reclamo }}" style="display: none;">
+                            <label for="tiempo_estimado_{{ reclamo.id_reclamo }}">Tiempo estimado de resolución (días):</label>
+                            <input type="number" name="tiempo_estimado" id="tiempo_estimado_{{ reclamo.id_reclamo }}" min="1" max="15">
+                        </div>
+
+                        <div id="tiempo_ocupado_div_{{ reclamo.id_reclamo }}" style="display: none;">
+                            <label for="tiempo_ocupado_{{ reclamo.id_reclamo }}">Tiempo que llevó resolverlo (días):</label>
+                            <input type="number" name="tiempo_ocupado" id="tiempo_ocupado_{{ reclamo.id_reclamo }}" min="1" max="15">
+                        </div>
+
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" name="accion" value="cambiar_estado">Cambiar estado</button>
+                    </form>
+                {% endif %}
+
+
+            {% endfor %}
+        </div>
+    </div>
+    <a href="{{ url_for('gestion_de_jefes') }}">Volver</a>
+    <script>
+    function toggleTiempoCampos(idReclamo, estado) {
+        const tiempoEstimadoDiv = document.getElementById('tiempo_estimado_div_' + idReclamo);
+        const tiempoOcupadoDiv = document.getElementById('tiempo_ocupado_div_' + idReclamo);
+        const tiempoEstimadoInput = document.getElementById('tiempo_estimado_' + idReclamo);
+        const tiempoOcupadoInput = document.getElementById('tiempo_ocupado_' + idReclamo);
+
+        tiempoEstimadoDiv.style.display = 'none';
+        tiempoOcupadoDiv.style.display = 'none';
+        tiempoEstimadoInput.removeAttribute('required');
+        tiempoOcupadoInput.removeAttribute('required');
+
+        if (estado === 'en proceso') {
+            tiempoEstimadoDiv.style.display = 'block';
+            tiempoEstimadoInput.setAttribute('required', 'required');
+        } else if (estado === 'resuelto') {
+            tiempoOcupadoDiv.style.display = 'block';
+            tiempoOcupadoInput.setAttribute('required', 'required');
+        }
+    }
+
+    window.onload = function() {
+        const selects = document.querySelectorAll('select[name="nuevo_estado"]');
+        selects.forEach(select => {
+            const idReclamo = select.id.split('_')[2]; // Extrae el id_reclamo del id (nuevo_estado_ID)
+            const estadoInicial = select.value;
+            toggleTiempoCampos(idReclamo, estadoInicial);
+        });
+    };
+    </script>
+</body>
+
+</html>

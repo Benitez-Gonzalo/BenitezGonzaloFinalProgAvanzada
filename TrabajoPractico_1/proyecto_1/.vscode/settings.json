@@ -1,0 +1,14 @@
+{
+    "python.analysis.extraPaths": ["${workspaceFolder}"],
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "${workspaceFolder};${env:PYTHONPATH}",
+        "PATH": "${workspaceFolder};${env:PATH}"
+    },
+    "vscode-pets.petColor": "black",
+    "vscode-pets.theme": "beach",
+    "vscode-pets.position": "explorer",
+    "vscode-pets.petType": "cat",
+    "vscode-pets.petSize": "medium",
+    "vscode-pets.throwBallWithMouse": false,
+    "python.analysis.typeCheckingMode": "basic"
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Trivia de peliculas</title>
+    </head>
+
+    <body bgcolor="#000000" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+    {% if Ronda <= rondas : %}
+        <h1>Ronda Numero: {{Ronda}}</h1>
+        {% if Ronda <= rondas: %}
+        <p>Elija la pelicula a la que pertenece la frase:</p>
+        <p>
+            {{frase}}
+        </p>
+
+        {% for opcion in opciones: %}
+            <li type="1">
+                {{opcion}} 
+            </li>
+        {% endfor %}
+        <form action="/jugar" method="post">
+            <p>
+            <label for="opcion">Opcion:</label><br>
+            <input type="text" id="opcion" name="opcion" autofocus="on"><br><br>
+            </p>
+            <button type="submit">Enviar</button>
+        </form>
+        {%endif%}
+                
+        {% if Ronda > 1: %}
+            {% if EsCorrecto: %}
+                <h2> Opcion correcta <h2>
+            {% else: %}
+                <h2> Opcion incorrecta, la opcion correcta era: {{pelicula_anterior}}<h2>
+            {% endif %}  
+        {% endif %}
+        {% if Ronda == rondas+1 : %}
+            Fin del juego
+            <h2>Has acertado {{aciertos}} / {{rondas}}</h2><br>
+            <form action="/">
+                <input type="submit" value="Volver al inicio"><br><br>
+              </form>
+        {% endif %}
+
+    {%elif(Ronda>rondas)%}
+        <h1>Ronda Numero: {{rondas}}</h1>
+        </h2> Fin del juego </h2>
+            <h2>Has acertado {{aciertos}} / {{rondas}}</h2><br>
+            <form action="/">
+                <input type="submit" value="Volver al inicio"><br><br>
+              </form>
+        {%endif%}
+    </body>
+    </html>

@@ -1,0 +1,1 @@
+El proyecto "Cinta Transportadora" simula un sistema de control de calidad de frutas y verduras según su actividad acuosa.

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamos</title>
+</head>
+<body>
+    <h1>Lista de Reclamos</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Lista de reclamos -->   
+    {% for reclamo in lista_reclamos %}
+        <div>
+            <li>ID: {{ reclamo.id_reclamo}}.</li>
+            <li>Reclamo: {{ reclamo.contenido }}.</li>
+            <li>Clasificación: {{ reclamo.departamento }}.</li>
+            <li>Fecha de creación: {{ reclamo.fecha_y_hora| datetimeformat }}.</li>
+            <li>Estado: {{ reclamo.estado }}.</li>
+            <li>Cantidad de adherentes: {{ cantidad_de_asociados[reclamo.id_reclamo] }}.</li>
+
+            <!-- Botón de adherirse-->
+            <form action="{{ url_for('adherirse_a_reclamo_desde_lista') }}" method="GET">
+                <!-- Campo oculto con el ID del reclamo -->
+                <input type="hidden" name="id_reclamo" value="{{ reclamo.id_reclamo }}">
+                <button type="submit" name="accion" value="adhesion_reclamo">Adherirse</button>
+            </form>
+        </div>
+    {% endfor %}
+
+    <a href="{{ url_for('usuario_final') }}">Inicio</a>
+
+</body>
+</html>

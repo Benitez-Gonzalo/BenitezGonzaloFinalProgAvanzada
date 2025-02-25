@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamos</title>
+</head>
+
+<body>
+    <h1>Ayuda</h1>
+    <h2>Opción "Manejar Reclamos"</h2>
+    <p>
+        Esta opción muestra una lista de los reclamos pertenecientes al departamento en
+        cuestión. Se cuenta con una variedad de opciones para modificar el estado de
+        cada reclamo, ingrese el estado en el cual se encuentre el reclamo correspondiente.
+        Si ingresa "En proceso" deberá ingresar el tiempo estimado para resolver el reclamo,
+        si ingresa "Resuelto" deberá ingresar el tiempo que tardó en ser resuelto el reclamo.:
+        <li>Pendiente</li><li>En proceso</li><li>Resuelto</li><li>Inválido</li><br>
+        Tenga en cuenta que el secretario académico puede cambiar el departamento al que pertenece un reclamo.
+        
+    </p>
+    <h2>Opción "Analítica"</h2>
+    <p>
+        Presione esta opción si desea obtener las estadísticas sobre los reclamos,
+        entiéndase, los porcentajes de cada estado para todos los reclamos (pendiente,
+        en proceso, resuelto, inválido), las palabras más repetidas en los reclamos, y las medianas
+        de los tiempos estimados de resolución y de los tiempos que llevó resolver los reclamos.
+    </p>
+</body>
+
+<a href="{{ url_for('gestion_de_jefes') }}">Volver</a>
+
+</html>

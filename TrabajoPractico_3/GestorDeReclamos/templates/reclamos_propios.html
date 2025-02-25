@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reclamos</title>
+</head>
+<body>
+    <h1>Mis Reclamos</h1>
+
+    {% if reclamos_del_usuario == 0 %}
+        <p>No has creado ni seguido ningún reclamo.</p>
+    {% else %}
+        <!-- Reclamos creados por el usuario -->
+        <h2>Reclamos creados por mí y reclamos que sigo.</h2>
+        {% if creados %}
+            <p>No has creado ningún reclamo.</p>
+        {% else %}
+            <ul>
+                {% for reclamo in reclamos_del_usuario %}
+                    <div>
+                        <p>{{ reclamo.contenido }}</p>
+                        <p>Estado: {{ reclamo.estado }}</p>
+                    </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+
+    <!-- Enlace para volver a la página principal del usuario -->
+    <a href="{{ url_for('usuario_final') }}">Volver al Inicio</a>
+</body>
+</html>

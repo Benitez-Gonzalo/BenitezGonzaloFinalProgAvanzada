@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia</title>
+</head>
+
+<body bgcolor="#000000" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+
+    <img src="static/images/trivia.jpg" alt="" width="400" height="400">
+    <h2>Trivia de peliculas</h2>
+    <h4>Tras ingresar su nombre de usuario, usted debe ingresar la cantidad de rondas que desea jugar y apretar "iniciar trivia".
+        Tras esto, comenzará el juego, donde se le mostrará una frase y una lista de tres películas; debe ingresar a qué película de las que se muestran pertenece dicha frase.
+        También puede observar el historial de las rondas anteriores, así también como gráficas con datos estadísticos históricos.
+        Finalmente, puede ver la lista de películas que se mostrarán como opción, si así lo desea.
+    </h4>
+
+    
+    <form action="/", method="post">
+        <div>
+            <label for="usuario">Nombre de usuario:</label><br>
+            <input type="text" id="usuario" name="usuario" autofocus="on" value=""><br>
+            <label for="rondas">Cantidad de rondas:</label><br>
+            <input type="number" max="10" min="3" id="rondas" name="rondas" value=""><br>
+            <input type="submit" value="Iniciar trivia">
+            
+        </div>
+    </form>
+    <!--Para los form action puedo usar la ruta (lo que va en el decorador) o el nombre de la función que tiene el decorador-->
+    <form action="{{url_for('historial')}}">
+        <input type="submit" value="Ver Historial"><br><br>
+    </form>
+    <form action="{{url_for('listaPelis')}}">
+        <input type="submit" value="Ver Películas"><br><br>
+    </form>
+    <form action="{{url_for('mostrarGraficas')}}">
+        <input type="submit" value="Ver Gráficas"><br><br>
+    </form>
+</body>
+
+
+</html>

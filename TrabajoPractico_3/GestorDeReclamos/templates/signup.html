@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+</head>
+<body>
+    <h1>Registrar Nuevo Usuario</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('signup') }}">
+        {{ form.hidden_tag() }}
+        
+        <label for="nombre">Nombre:</label>
+        {{ form.nombre(size=20) }}
+
+        <label for="nombreDeUsuario">Nombre de usuario:</label>
+        {{ form.nombreDeUsuario(size=20) }}    
+
+        <label for="email">Email:</label>
+        {{ form.email(size=20) }}
+        
+        <label for="claustro">Claustro:</label>
+        {{ form.claustro(size=20) }}
+
+        <label for="contraseña">Contraseña:</label>
+        {{ form.contraseña(size=20) }}
+        
+
+        <label for="confirmacion">Repetir Contraseña:</label>
+        {{ form.confirmacion(size=20) }}
+
+
+        <button type="submit">Registrar</button>
+    </form>
+    <a href="{{ url_for('inicio') }}">Volver al Inicio</a>
+</body>
+</html>
