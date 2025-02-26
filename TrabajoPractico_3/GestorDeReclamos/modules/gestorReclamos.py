@@ -74,17 +74,32 @@ class GestorDeReclamos:
         else:
             return self.__repo.obtener_todos_los_registros()
     
-    def obtener_tiempos(self):
-        """Devuelve una lista con el tiempo que se estima que va a
-        tardar en resolverse cada reclamo
+    def obtener_tiempos_por_departamento(self, departamento):
+        """Devuelve listas de tiempos estimados y ocupados solo para los reclamos de un departamento específico.
+
+        Args:
+            departamento (str): El departamento por el cual filtrar los reclamos.
 
         Returns:
-            list[int]:tiempos estimados
+            tuple: (lista_tiempos_estimados, lista_tiempos_ocupados)
         """
-        modelo_reclamos = self.__repo.obtener_todos_los_registros()
+        reclamos = self.__repo.obtener_registros_por_filtro('clasificacion', departamento)
+        lista_tiempos_estimados = [reclamo.tiempo_estimado for reclamo in reclamos if reclamo.tiempo_estimado is not None]
+        lista_tiempos_ocupados = [reclamo.tiempo_ocupado for reclamo in reclamos if reclamo.tiempo_ocupado is not None]
+        return lista_tiempos_estimados, lista_tiempos_ocupados
+    
+    def obtener_tiempos(self):
+        """Devuelve una lista con los tiempo que se estima que va a
+        tardar en resolverse cada reclamo y otra lista con el tiempo
+        que llevó resolverlo.
+
+        Returns:
+            list[int]:tiempos estimados,list[int]:tiempos_ocupados
+        """
+        reclamos = self.__repo.obtener_todos_los_registros() 
         lista_tiempos_estimados=[]
         lista_tiempos_ocupados=[]
-        for reclamo in modelo_reclamos:
+        for reclamo in reclamos:
             lista_tiempos_estimados.append(reclamo.tiempo_estimado)
             lista_tiempos_ocupados.append(reclamo.tiempo_ocupado)
         return lista_tiempos_estimados,lista_tiempos_ocupados

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Departamento</title>
+</head>
+<body>
+    <h1>Seleccionar Departamento para Analíticas</h1>
+    <form method="POST" action="{{ url_for('gestionar_jefes') }}">
+        <label for="departamento_seleccionado">Departamento:</label>
+        <select name="departamento_seleccionado" id="departamento_seleccionado">
+            <option value="">Todos los departamentos</option>
+            <option value="soporte informático">Soporte Informático</option>
+            <option value="maestranza">Maestranza</option>
+            <option value="secretaría técnica">Secretaría Técnica</option>
+        </select>
+        <button type="submit" name="accion" value="analitica">Ver Analíticas</button>
+    </form>
+    <a href="{{ url_for('gestionar_jefes') }}">Volver</a>
+</body>
+</html>

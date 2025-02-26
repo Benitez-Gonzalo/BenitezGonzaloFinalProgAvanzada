@@ -6,9 +6,9 @@
     <title>Reclamos</title>
 </head>
 
-<body bgcolor="#000000" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+<body>
 
-    <h3>Bienvenido</h3>
+    <h3>Bienvenido, {{ usuario }}</h3>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -28,7 +28,7 @@
         <input type="text" id="departamento" name="departamento" placeholder="Ingrese departamento">
         <button type="submit" name="accion" value="listar_reclamos">Listar Reclamos</button>
     </form>
-    <form action="{{ url_for('usuario_final', reclamos_propios='true') }}" method="GET">
+    <form action="{{ url_for('gestionar_usuario_final', reclamos_propios='true') }}" method="GET">
         <button type="submit" name="accion" value="reclamos_propios">Mis reclamos</button>
     </form><br>
     <form action="{{ url_for('logout') }}" method="get">

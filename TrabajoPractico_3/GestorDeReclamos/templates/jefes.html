@@ -6,7 +6,7 @@
     <title>Reclamos</title>
 </head>
 <body>
-    <h1>Panel de Jefe</h1>
+    <h1>Panel de jefe de {{ departamento }}. Bienvenido, {{ usuario }}</h1>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -19,7 +19,7 @@
     {% endwith %}
 
     <!-- Formulario con las opciones de acción -->
-    <form method="POST" action="{{ url_for('gestion_de_jefes') }}">
+    <form method="POST" action="{{ url_for('gestionar_jefes') }}">
         <button type="submit" name="accion" value="analitica" class="btn">Analítica</button>
         <button type="submit" name="accion" value="manejar_reclamos" class="btn">Manejar Reclamos</button>
         <button type="submit" name="accion" value="ayuda" class="btn">Ayuda</button>

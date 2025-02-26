@@ -17,7 +17,7 @@ class GestorUsuarios:
             ValueError: El usuario ya se registró antes
         """
         if self.__repo.obtener_registro_por_filtro("email",email) or self.__repo.obtener_registro_por_filtro('nombreDeUsuario', nombreDeUsuario):
-            return False
+            raise Exception("El usuario ya está registrado")
         else:
             pass_encriptada=generate_password_hash(password=password,
                                                 method= 'pbkdf2:sha256',

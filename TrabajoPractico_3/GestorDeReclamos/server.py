@@ -22,13 +22,10 @@ def datetimeformat(value, format='%Y-%m-%d %H:%M:%S'):
 @app.route("/", methods = ["GET","POST"])
 def inicio():
     if 'username' in session and GestorLogin.usuario_autenticado:
-        username = session['username']        
+        username = session['username']           
     else:
         username = 'Invitado'
-        
     return render_template("inicio.html", user=username)
-
-@app.route("/signup", methods=["GET","POST"])
 
 @app.route("/signup", methods= ["GET", "POST"])
 def signup():
@@ -37,10 +34,10 @@ def signup():
         try:
             registrar(form_registro)
         except:
-            flash("El usuario ya está registrado")
+            flash("Registro inválido. El nombre de usuario o el mail pertenecen a un usuario registrado previamente.")
             return redirect(url_for('signup'))    
         else:
-            flash("Usuario registrado con éxito")
+            flash("Se ha registrado con éxito.")
             return redirect(url_for("login"))               
     return render_template('signup.html', form=form_registro)
 
@@ -64,25 +61,36 @@ def login():
         #Gestión de administradores:
         if session['email'] in mails_jefes_depto or session['email']==mail_sec_tecnico:
             #departamento = session['email'].split('@')[0]
-            return redirect(url_for('gestion_de_jefes'))
+            return redirect(url_for('gestionar_jefes'))
         else:
-            return redirect(url_for('usuario_final', username=session['username']))
+            return redirect(url_for('gestionar_usuario_final', username=session['username']))
     
     #Si hay errores de cualquier tipo, vuelve al formulario de login    
     return render_template('login.html',form=form_login)
 
 @app.route("/jefes", methods=['GET', 'POST'])
 @gestor_login.se_requiere_login
-def gestion_de_jefes():
+def gestionar_jefes():
     departamento = session['email'].split('@')[0]
     if departamento =='informatica':departamento = 'soporte informático'
     if departamento == 'sec_tecnica':departamento = 'secretaría técnica' 
     if request.method == 'POST':
         if request.form.get('accion') == 'analitica':
-            # Lógica para mostrar las analíticas
-            mostrar_analíticas()
-            return render_template('analíticas.html',pdf_path=ARCHIVOPDF,html_path=ARCHIVOHTML)
-        #Hecho
+            if departamento == 'secretaría técnica':
+                # Si no ha seleccionado un departamento, mostrar la página de selección
+                if 'departamento_seleccionado' not in request.form:
+                    return render_template('seleccionar_departamento.html')
+                else:
+                    # Procesar la selección del departamento
+                    selected_departamento = request.form.get('departamento_seleccionado')
+                    if selected_departamento == "":
+                        mostrar_analíticas()  # Todos los departamentos
+                    else:
+                        mostrar_analíticas(selected_departamento)  # Departamento específico
+            else:
+                # Para otros jefes, usar su propio departamento
+                mostrar_analíticas(departamento)
+            return render_template('analíticas.html', pdf_path=ARCHIVOPDF, html_path=ARCHIVOHTML)
         if request.form.get('accion') == 'manejar_reclamos':
             # Cargar los registros del departamento
             if departamento == 'secretaría técnica': 
@@ -106,7 +114,7 @@ def gestion_de_jefes():
             # Cerrar sesión
             return redirect(url_for('logout'))
     # Si no se hace un POST ni GET con `resolver_reclamo`, se carga la página principal
-    return render_template('jefes.html')
+    return render_template('jefes.html',usuario=session['username'], departamento=departamento)
     
 @app.route("/modificar_estado", methods=["POST"])
 @gestor_login.se_requiere_login
@@ -158,7 +166,7 @@ def modificar_departamento_reclamo():
 
 @app.route("/opciones_usuario_final", methods=['GET', 'POST'])
 @gestor_login.se_requiere_login
-def usuario_final():
+def gestionar_usuario_final():
     # Opción de crear un nuevo reclamo
     if request.method == 'POST' and request.form.get('accion') == 'crear_reclamo':
         # Redirige a la función de crear reclamo
@@ -185,7 +193,7 @@ def usuario_final():
                                reclamos_del_usuario=reclamos_del_usuario)
 
     # Redirige al panel principal de usuario si no hay acción específica
-    return render_template("opciones_usuario_final.html", user=session['username'])
+    return render_template("opciones_usuario_final.html", usuario=session['username'])
 
 @app.route("/crear_reclamo", methods=['GET', 'POST'])
 @gestor_login.se_requiere_login
@@ -209,7 +217,7 @@ def crear_reclamo():
         if 'nuevo_reclamo' in request.form:
             gestor_reclamos.creación_reclamo(reclamo,id_usuario)
             flash("Reclamo creado con éxito.")
-            return redirect(url_for('usuario_final'))
+            return redirect(url_for('gestionar_usuario_final'))
         # Si hay reclamos similares encontrados y el usuario no ha solicitado crear un reclamo nuevo
         elif reclamos_similares_o_igual:
 
@@ -224,7 +232,7 @@ def crear_reclamo():
         else:
             gestor_reclamos.creación_reclamo(reclamo,id_usuario)
             flash("Reclamo creado con éxito.")
-            return redirect(url_for('usuario_final'))
+            return redirect(url_for('gestionar_usuario_final'))
 
     return render_template("crear_reclamo.html")
 
@@ -236,7 +244,7 @@ def adherirse_a_reclamo_desde_creación():
         flash("Adhesión al reclamo exitosa.")
     else:
         flash("Adhesión no exitosa, ya se adhirió con anterioridad.")
-    return redirect(url_for('usuario_final'))
+    return redirect(url_for('gestionar_usuario_final'))
 
 @app.route("/adhesion_reclamo_lista", methods = ["GET","POST"])
 @gestor_login.se_requiere_login

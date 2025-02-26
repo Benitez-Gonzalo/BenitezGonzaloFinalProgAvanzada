@@ -22,7 +22,6 @@ repo_reclamos,repo_usuarios = crear_repositorio()
 gestor_usuarios = GestorUsuarios(repo_usuarios)
 gestor_login = GestorLogin(gestor_usuarios,login_manager)
 gestor_reclamos = GestorDeReclamos(repo_reclamos)
-monticuloReclamosEnProceso,monticuloReclamosResueltos = MonticuloDeMedianaReclamosEnProceso(),MonticuloDeMedianaReclamosResueltos()
 pGestorEstadístico = GestorEstadistico(repo_reclamos)
 graficador = Graficador(pGestorEstadístico)
 reportePDF = ReportePDF()
@@ -57,8 +56,7 @@ def registrar(form_registro):
                                             form_registro.nombreDeUsuario.data,
                                             form_registro.email.data,
                                             form_registro.claustro.data,
-                                            form_registro.contraseña.data,
-                                            )
+                                            form_registro.contraseña.data)
     
 
 def obtener_usuarios_adheridos_por_reclamo():
@@ -68,17 +66,25 @@ def listar_todos_los_reclamos():
     return repo_reclamos.obtener_todos_los_registros()
     
     
-def mostrar_analíticas():
-    lista_tiempos_estimados,lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos()
-    for tiempo_estimado,tiempo_ocupado in zip(lista_tiempos_estimados,lista_tiempos_ocupados):
-        monticuloReclamosEnProceso.insertar(tiempo_estimado)
-        monticuloReclamosResueltos.insertar(tiempo_ocupado)
-    try: 
-        graficador.mostrarGraficas(ARCHIVOJPG,monticuloReclamosEnProceso.obtener_mediana(),monticuloReclamosResueltos.obtener_mediana())
-        reportePDF.generarReporte(ARCHIVOPDF,ARCHIVOJPG)
-        reporteHTML.generarReporte(ARCHIVOHTML,ARCHIVOJPG)
+def mostrar_analíticas(departamento=None):
+    monticuloReclamosEnProceso,monticuloReclamosResueltos = MonticuloDeMedianaReclamosEnProceso(),MonticuloDeMedianaReclamosResueltos()
+    try:
+        if departamento:
+            lista_tiempos_estimados, lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos_por_departamento(departamento)
+        else:
+            lista_tiempos_estimados, lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos() #Por si acaso
+        for tiempo_estimado, tiempo_ocupado in zip(lista_tiempos_estimados, lista_tiempos_ocupados):
+            monticuloReclamosEnProceso.insertar(tiempo_estimado)
+            print(tiempo_estimado)
+            monticuloReclamosResueltos.insertar(tiempo_ocupado)
+            print(tiempo_ocupado)
+        graficador.mostrarGraficas(ARCHIVOJPG, monticuloReclamosEnProceso.obtener_mediana(), monticuloReclamosResueltos.obtener_mediana(), departamento)
+        print(monticuloReclamosEnProceso.obtener_mediana())
+        print(monticuloReclamosResueltos.obtener_mediana())
+        reportePDF.generarReporte(ARCHIVOPDF, ARCHIVOJPG)
+        reporteHTML.generarReporte(ARCHIVOHTML, ARCHIVOJPG)
     except:
-        flash("No hay suficiente información para generar las gráficas ni los reportes.")
+        flash("No hay datos presentes para generar las analíticas (se muestra la última gráfica generada).")
 
 
 def actualizar_reclamo(id_reclamo, nuevo_departamento, nuevo_estado, tiempo_estimado, tiempo_ocupado):
