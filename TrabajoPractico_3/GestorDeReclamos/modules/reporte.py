@@ -33,7 +33,7 @@ class ReporteHTML(Reporte):
         :param ruta_img: Ruta de la imagen a incluir en el HTML (formato JPG, PNG, etc.).
         :param ruta_html: Ruta del archivo HTML a generar.
         """
-        ruta_img = "D:/Documentos D/Facultad/ProgAvanzadaPython/Práctica/PAvanzadaBenitezOliva2024/TrabajoPractico_3/GestorDeReclamos/"+f"{ruta_imagen}"
+        ruta_img = "D:/Documentos D/Facultad/ProgAvanzadaPython/Práctica/BenitezGonzaloFinalProgAvanzada/TrabajoPractico_3/GestorDeReclamos/"+f"{ruta_imagen}"
         # Estructura básica del HTML
         contenido_html = f"""
         <!DOCTYPE html>
