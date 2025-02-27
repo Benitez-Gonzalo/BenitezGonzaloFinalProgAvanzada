@@ -1,11 +1,11 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from modules.persistencia import RepositorioUsuariosSQLAlchemy
+from modules.repositorioAbstracto import RepositorioAbstracto
 
 from modules.dominio import Usuario
   
 class GestorUsuarios:
-    def __init__(self,repo_usuarios:RepositorioUsuariosSQLAlchemy):
-        self.__repo = repo_usuarios
+    def __init__(self,repo:RepositorioAbstracto):
+        self.__repo = repo
         
     def registrar_nuevo_usuario(self,nombre:str,nombreDeUsuario:str,email:str,claustro:str,password:str):
         """Registra un nuevo usuario
@@ -17,7 +17,7 @@ class GestorUsuarios:
             ValueError: El usuario ya se registró antes
         """
         if self.__repo.obtener_registro_por_filtro("email",email) or self.__repo.obtener_registro_por_filtro('nombreDeUsuario', nombreDeUsuario):
-            raise Exception("El usuario ya está registrado")
+            raise ValueError("El usuario ya está registrado")
         else:
             pass_encriptada=generate_password_hash(password=password,
                                                 method= 'pbkdf2:sha256',

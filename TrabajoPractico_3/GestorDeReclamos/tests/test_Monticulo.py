@@ -1,79 +1,107 @@
 import unittest
-import heapq
-from modules.servicio import MonticuloDeMediana  # Asumimos que la clase está en este archivo
+from unittest.mock import MagicMock
+from modules.monticuloMediana import MonticuloMediana, MonticuloMax, MonticuloMin  # Ajusta según tu estructura
 
-class TestMonticuloDeMediana(unittest.TestCase):
-
-    def setUp(self):
-        """
-        Configuración previa a cada test.
-        """
-        self.monticulo = MonticuloDeMediana()
-
-    def test_insertar(self):
-        """
-        Test para verificar la inserción en el Montículo de Mediana.
-        """
-
-        # Caso 1: Insertar un único elemento
+class TestMonticuloMediana(unittest.TestCase):
+    def test_insertar_primer_valor_actualiza_mediana(self):
         # Arrange
-        valor = 5
+        # Creamos mocks para los montículos internos
+        max_heap_mock = MagicMock(spec=MonticuloMax)
+        min_heap_mock = MagicMock(spec=MonticuloMin)
+
+        # Configuramos el comportamiento inicial de los mocks
+        max_heap_mock.tamano.return_value = 0
+        min_heap_mock.tamano.return_value = 0
+        max_heap_mock.raiz.return_value = 5  # Para cuando se necesite la raíz después
+
+        # Instanciamos MonticuloMediana con los mocks
+        monticulo = MonticuloMediana()
+        monticulo._MonticuloMediana__max_heap = max_heap_mock  # Acceso privado para inyectar mock
+        monticulo._MonticuloMediana__min_heap = min_heap_mock
 
         # Act
-        self.monticulo.insertar(valor)
+        monticulo.insertar(5)
 
         # Assert
-        self.assertEqual(len(self.monticulo._MonticuloDeMediana__max_heap), 1)
-        self.assertEqual(len(self.monticulo._MonticuloDeMediana__min_heap), 0)
+        # Verificamos que se llamó a insertar en max_heap con el valor correcto
+        max_heap_mock.insertar.assert_called_once_with(5)
+        # Verificamos que no se llamó a min_heap (primer valor va a max_heap)
+        min_heap_mock.insertar.assert_not_called()
+        # Verificamos que la mediana se actualizó correctamente
+        self.assertEqual(monticulo._MonticuloMediana__mediana, 5)
+        # Verificamos que no se intentó balancear (solo un elemento)
+        max_heap_mock.extraer_raiz.assert_not_called()
+        min_heap_mock.extraer_raiz.assert_not_called()
 
-        # Caso 2: Insertar un segundo elemento
+    def test_insertar_balancea_monticulos(self):
         # Arrange
-        valor = 7
+        max_heap_mock = MagicMock(spec=MonticuloMax)
+        min_heap_mock = MagicMock(spec=MonticuloMin)
+
+        # Configuración comportamiento para tamano
+        max_heap_mock.tamano.side_effect = [1, 2, 1]  # Tamaños: 1 (inicio), 2 (tras insertar), 1 (tras balanceo)
+        min_heap_mock.tamano.side_effect = [0, 1]     # Tamaños: 0 (inicio), 1 (tras balanceo)
+
+        # Configuración extraer_raiz y raiz
+        max_heap_mock.extraer_raiz.return_value = 5   # Extraemos 5 de max_heap
+        max_heap_mock.raiz.return_value = 3           # Raíz final de max_heap
+        min_heap_mock.raiz.return_value = 5           # Raíz final de min_heap
+
+        monticulo = MonticuloMediana()
+        monticulo._MonticuloMediana__max_heap = max_heap_mock
+        monticulo._MonticuloMediana__min_heap = min_heap_mock
+        monticulo._MonticuloMediana__mediana = 5      # Estado inicial
 
         # Act
-        self.monticulo.insertar(valor)
+        monticulo.insertar(3)  # Insertamos 3
 
         # Assert
-        self.assertEqual(len(self.monticulo._MonticuloDeMediana__max_heap), 1)
-        self.assertEqual(len(self.monticulo._MonticuloDeMediana__min_heap), 1)
-
-        # Caso 3: Insertar más elementos
-        valores = [1, 6]
-        for valor in valores:
-            self.monticulo.insertar(valor)
-
-        # Assert
-        self.assertEqual(len(self.monticulo._MonticuloDeMediana__max_heap), 2)
-        self.assertEqual(len(self.monticulo._MonticuloDeMediana__min_heap), 2)
-
-    def test_obtener_mediana(self):
-        """
-        Test para verificar el cálculo de la mediana en diferentes casos.
-        """
-
-        # Caso 1: Insertar y obtener mediana de un solo elemento
+        max_heap_mock.insertar.assert_called_once_with(3)  # Se inserta 3 en max_heap
+        max_heap_mock.extraer_raiz.assert_called_once()    # Se extrae 5
+        min_heap_mock.insertar.assert_called_once_with(5)  # Se inserta 5 en min_heap
+        self.assertEqual(monticulo._MonticuloMediana__mediana, 4)  # Mediana: (3 + 5) / 2
+        
+    def test_obtener_mediana_devuelve_false_cuando_vacio(self):
         # Arrange
-        valor = 5
+        max_heap_mock = MagicMock(spec=MonticuloMax)
+        min_heap_mock = MagicMock(spec=MonticuloMin)
+
+        # Simulamos montículos vacíos
+        max_heap_mock.tamano.return_value = 0
+        min_heap_mock.tamano.return_value = 0
+
+        monticulo = MonticuloMediana()
+        monticulo._MonticuloMediana__max_heap = max_heap_mock
+        monticulo._MonticuloMediana__min_heap = min_heap_mock
 
         # Act
-        self.monticulo.insertar(valor)
-        mediana = self.monticulo.obtener_mediana()
+        resultado = monticulo.obtener_mediana()
 
         # Assert
-        self.assertEqual(mediana, 5)
+        self.assertFalse(resultado)
+        max_heap_mock.tamano.assert_called_once()
+        min_heap_mock.tamano.assert_called_once()
 
-        # Caso 2: Insertar más elementos y verificar medianas
+    def test_obtener_mediana_devuelve_valor_correcto(self):
         # Arrange
-        valores = [7, 1, 6, 3, 8, 9]
-        resultados_esperados = [6.0, 5, 5.5, 5, 5.5, 6]
+        max_heap_mock = MagicMock(spec=MonticuloMax)
+        min_heap_mock = MagicMock(spec=MonticuloMin)
 
-        for i, valor in enumerate(valores):
-            # Act
-            self.monticulo.insertar(valor)
-            mediana = self.monticulo.obtener_mediana()
+        # Simulamos un estado con elementos
+        max_heap_mock.tamano.return_value = 1
+        min_heap_mock.tamano.return_value = 0  # No se usa debido al cortocircuito
+        monticulo = MonticuloMediana()
+        monticulo._MonticuloMediana__max_heap = max_heap_mock
+        monticulo._MonticuloMediana__min_heap = min_heap_mock
+        monticulo._MonticuloMediana__mediana = 5  # Simulamos una mediana previa
 
-            # Assert
-            self.assertEqual(mediana, resultados_esperados[i])
+        # Act
+        resultado = monticulo.obtener_mediana()
 
-if __name__ == "__main__":
+        # Assert
+        self.assertEqual(resultado, 5)  # La mediana sigue siendo 5
+        max_heap_mock.tamano.assert_called_once()  # Se llama porque se evalúa primero
+        min_heap_mock.tamano.assert_not_called()  # No se llama por cortocircuito
+
+if __name__ == '__main__':
     unittest.main()

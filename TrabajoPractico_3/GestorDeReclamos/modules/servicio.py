@@ -84,7 +84,7 @@ def mostrar_analíticas(departamento=None):
         reportePDF.generarReporte(ARCHIVOPDF, ARCHIVOJPG)
         reporteHTML.generarReporte(ARCHIVOHTML, ARCHIVOJPG)
     except:
-        raise Exception("No hay datos para generar las analíticas.")
+        flash("No hay datos para generar las analíticas. Se muestra la última gráfica generada.")
 
 
 def actualizar_reclamo(id_reclamo, nuevo_departamento, nuevo_estado, tiempo_estimado, tiempo_ocupado):

@@ -1,16 +1,14 @@
 from modules.dominio import Reclamo
 
 from datetime import datetime
-from sqlalchemy import func
-from modules.persistencia import RepositorioReclamosSQLAlchemy
+from modules.repositorioAbstracto import RepositorioAbstracto
 from modules.persistencia import Clasificador
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from modules.modelos import ModeloReclamo,ModeloUsuario,asociacion_usuarios_reclamos
 
 
 class GestorDeReclamos:
-    def __init__(self,repo:RepositorioReclamosSQLAlchemy):
+    def __init__(self,repo:RepositorioAbstracto):
         self.__repo = repo
         self.clasificador = Clasificador()
         self.__numero_reclamos = len(self.__repo.obtener_todos_los_registros())

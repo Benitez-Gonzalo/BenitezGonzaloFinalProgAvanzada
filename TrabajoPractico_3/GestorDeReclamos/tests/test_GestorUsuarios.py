@@ -6,6 +6,7 @@ from modules.dominio import Usuario  # La clase Usuario que se está utilizando 
 
 class TestGestorUsuarios(unittest.TestCase):
 
+    #Usé un método "setUp" porque más de un test mockea un repo y usa un objeto GestorUsuarios.
     def setUp(self):
         # Creamos un Mock del repositorio
         self.repo_mock = Mock()
@@ -59,23 +60,47 @@ class TestGestorUsuarios(unittest.TestCase):
         self.assertNotEqual(usuario_guardado.contraseña, password)  # La contraseña no debe estar en texto plano
         self.assertTrue(check_password_hash(usuario_guardado.contraseña, password))  # Verificamos que la encriptación sea válida
 
-    def test_registrar_nuevo_usuario_llamado_correctamente(self):
+def test_registrar_nuevo_usuario_llamado_correctamente(self):
         """Verifica que los métodos del repositorio se llaman con los argumentos correctos."""
-        # Configuramos el Mock para que el usuario no exista
+        # Arrange
+        # Configuramos el mock para que no haya usuarios existentes
         self.repo_mock.obtener_registro_por_filtro.return_value = None
 
-        # Llamamos al método
-        self.gestor.registrar_nuevo_usuario(
-            nombre="Juan Pérez",
-            nombreDeUsuario="jperez",
-            email="juan@example.com",
-            claustro="estudiante",
-            password="password123"
+        # Datos de prueba
+        nombre = "Juan Pérez"
+        nombreDeUsuario = "jperez"
+        email = "juan@ejemplo.com"
+        claustro = "estudiante"
+        password = "password123"
+
+        # Act
+        resultado = self.gestor.registrar_nuevo_usuario(
+            nombre=nombre,
+            nombreDeUsuario=nombreDeUsuario,
+            email=email,
+            claustro=claustro,
+            password=password
         )
 
-        # Verificamos que "obtener_registro_por_filtro" fue llamado con los argumentos correctos
-        self.repo_mock.obtener_registro_por_filtro.assert_called_once_with("email", "juan@example.com")
+        # Assert
+        # Verificamos que obtener_registro_por_filtro fue llamado dos veces con los argumentos correctos
+        calls = [call('email', email), call('nombreDeUsuario', nombreDeUsuario)]
+        self.repo_mock.obtener_registro_por_filtro.assert_has_calls(calls, any_order=True)
+        self.assertEqual(self.repo_mock.obtener_registro_por_filtro.call_count, 2)
+
+        # Verificamos que guardar_registro fue llamado con un objeto Usuario correcto
+        usuario_esperado = Usuario(None, nombre, nombreDeUsuario, email, claustro, ANY)  # ANY para la contraseña encriptada
         self.repo_mock.guardar_registro.assert_called_once()
+        args, _ = self.repo_mock.guardar_registro.call_args
+        usuario_guardado = args[0]
+        self.assertIsInstance(usuario_guardado, Usuario)
+        self.assertEqual(usuario_guardado.nombre, nombre)
+        self.assertEqual(usuario_guardado.nombreDeUsuario, nombreDeUsuario)
+        self.assertEqual(usuario_guardado.email, email)
+        self.assertEqual(usuario_guardado.claustro, claustro)
+
+        # Verificamos que el método devuelve True
+        self.assertTrue(resultado)
 
 if __name__ == '__main__':
     unittest.main()

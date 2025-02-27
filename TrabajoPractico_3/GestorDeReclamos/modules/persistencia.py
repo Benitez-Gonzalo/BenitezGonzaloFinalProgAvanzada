@@ -4,6 +4,8 @@ para almacenar los datos (por ejemplo con una base de datos). La capa de dominio
 por este cambio.
 """
 
+#El manejo de los repositorios se hizo utilizando polimorfismo.
+
 import pickle
 from sqlalchemy import func
 from modules.dominio import Usuario,Reclamo

@@ -1,149 +1,152 @@
+#La relación de MontículoMediana con MontículoMax y MontículoMin se da mediante duck typing (polimorfismo sin herencia)
+
 class MonticuloMax:
     """Montículo de máximos implementado con un arreglo."""
     def __init__(self):
-        self.heap = []
+        self.__heap = []
 
-    def _subir(self, indice):
+    def subir(self, indice):
         """Sube un elemento hasta su posición correcta en el montículo de máximos."""
-        padre = (indice - 1) // 2
-        while indice > 0 and self.heap[padre] < self.heap[indice]:
-            self.heap[padre], self.heap[indice] = self.heap[indice], self.heap[padre]
+        padre = (indice - 1) // 2 #La división entera nos asegura obtener siempre el índice del padre independientemente de si el hijo es el izquierdo o el derecho.
+        while indice > 0 and self.__heap[padre] < self.__heap[indice]:
+            self.__heap[padre], self.__heap[indice] = self.__heap[indice], self.__heap[padre]
             indice = padre
             padre = (indice - 1) // 2
 
-    def _bajar(self, indice):
+    def bajar(self, indice):
         """Baja un elemento hasta su posición correcta en el montículo de máximos."""
-        tamano = len(self.heap)
+        tamano = len(self.__heap)
         mayor = indice
         izq = 2 * indice + 1
         der = 2 * indice + 2
 
-        if izq < tamano and self.heap[izq] > self.heap[mayor]:
+        if izq < tamano and self.__heap[izq] > self.__heap[mayor]:
             mayor = izq
-        if der < tamano and self.heap[der] > self.heap[mayor]:
+        if der < tamano and self.__heap[der] > self.__heap[mayor]:
             mayor = der
 
         if mayor != indice:
-            self.heap[indice], self.heap[mayor] = self.heap[mayor], self.heap[indice]
-            self._bajar(mayor)
+            self.__heap[indice], self.__heap[mayor] = self.__heap[mayor], self.__heap[indice]
+            self.bajar(mayor)
 
     def insertar(self, valor):
         """Inserta un valor en el montículo de máximos."""
-        self.heap.append(valor)
-        self._subir(len(self.heap) - 1)
+        self.__heap.append(valor)
+        self.subir(len(self.__heap) - 1)
 
-    def extraer_maximo(self):
+    def extraer_raiz(self):
         """Extrae y devuelve el valor máximo (raíz) del montículo."""
-        if not self.heap:
+        if not self.__heap:
             return None
-        if len(self.heap) == 1:
-            return self.heap.pop()
-        maximo = self.heap[0]
-        self.heap[0] = self.heap.pop()
-        self._bajar(0)
+        if len(self.__heap) == 1:
+            return self.__heap.pop()
+        maximo = self.__heap[0]
+        self.__heap[0] = self.__heap.pop()
+        self.bajar(0)
         return maximo
 
     def raiz(self):
         """Devuelve el valor máximo (raíz) sin extraerlo."""
-        return self.heap[0] if self.heap else None
+        return self.__heap[0] if self.__heap else None
 
     def tamano(self):
         """Devuelve el número de elementos en el montículo."""
-        return len(self.heap)
+        return len(self.__heap)
 
 
 class MonticuloMin:
     """Montículo de mínimos implementado con un arreglo."""
     def __init__(self):
-        self.heap = []
+        self.__heap = []
 
-    def _subir(self, indice):
+    def subir(self, indice):
         """Sube un elemento hasta su posición correcta en el montículo de mínimos."""
         padre = (indice - 1) // 2
-        while indice > 0 and self.heap[padre] > self.heap[indice]:
-            self.heap[padre], self.heap[indice] = self.heap[indice], self.heap[padre]
+        while indice > 0 and self.__heap[padre] > self.__heap[indice]:
+            self.__heap[padre], self.__heap[indice] = self.__heap[indice], self.__heap[padre]
             indice = padre
             padre = (indice - 1) // 2
 
-    def _bajar(self, indice):
+    def bajar(self, indice):
         """Baja un elemento hasta su posición correcta en el montículo de mínimos."""
-        tamano = len(self.heap)
+        tamano = len(self.__heap)
         menor = indice
         izq = 2 * indice + 1
         der = 2 * indice + 2
 
-        if izq < tamano and self.heap[izq] < self.heap[menor]:
+        if izq < tamano and self.__heap[izq] < self.__heap[menor]:
             menor = izq
-        if der < tamano and self.heap[der] < self.heap[menor]:
+        if der < tamano and self.__heap[der] < self.__heap[menor]:
             menor = der
 
         if menor != indice:
-            self.heap[indice], self.heap[menor] = self.heap[menor], self.heap[indice]
-            self._bajar(menor)
+            self.__heap[indice], self.__heap[menor] = self.__heap[menor], self.__heap[indice]
+            self.bajar(menor)
 
     def insertar(self, valor):
         """Inserta un valor en el montículo de mínimos."""
-        self.heap.append(valor)
-        self._subir(len(self.heap) - 1)
+        self.__heap.append(valor)
+        self.subir(len(self.__heap) - 1)
 
-    def extraer_minimo(self):
+    def extraer_raiz(self):
         """Extrae y devuelve el valor mínimo (raíz) del montículo."""
-        if not self.heap:
+        if not self.__heap:
             return None
-        if len(self.heap) == 1:
-            return self.heap.pop()
-        minimo = self.heap[0]
-        self.heap[0] = self.heap.pop()
-        self._bajar(0)
+        if len(self.__heap) == 1:
+            return self.__heap.pop()
+        minimo = self.__heap[0]
+        self.__heap[0] = self.__heap.pop()
+        self.bajar(0)
         return minimo
 
     def raiz(self):
         """Devuelve el valor mínimo (raíz) sin extraerlo."""
-        return self.heap[0] if self.heap else None
+        return self.__heap[0] if self.__heap else None
 
     def tamano(self):
         """Devuelve el número de elementos en el montículo."""
-        return len(self.heap)
+        return len(self.__heap)
 
+#La relación de MontículoMediana con MonticuloDeMedianaReclamosEnProceso y MonticuloDeMedianaReclamosResueltos es una herencia sin polimorfismo.
 
 class MonticuloMediana:
     """Estructura para calcular la mediana usando dos montículos."""
     def __init__(self):
-        self.max_heap = MonticuloMax()  # Almacena valores menores a la mediana
-        self.min_heap = MonticuloMin()  # Almacena valores mayores a la mediana
-        self.mediana = 0  # Valor inicial de la mediana
+        self.__max_heap = MonticuloMax()  # Almacena valores menores a la mediana
+        self.__min_heap = MonticuloMin()  # Almacena valores mayores a la mediana
+        self.__mediana = 0  # Valor inicial de la mediana
 
     def insertar(self, valor):
         """Inserta un valor y actualiza la mediana."""
         valor = int(valor)  # Convertimos a entero como en tu implementación original
-        if not self.max_heap.tamano() and not self.min_heap.tamano():
+        if not self.__max_heap.tamano() and not self.__min_heap.tamano():
             # Si ambos montículos están vacíos, insertamos en max_heap y seteamos la mediana
-            self.max_heap.insertar(valor)
-            self.mediana = valor
+            self.__max_heap.insertar(valor)
+            self.__mediana = valor
         else:
             # Comparar con la mediana actual y decidir dónde insertar
-            if valor < self.mediana:
-                self.max_heap.insertar(valor)
+            if valor < self.__mediana:
+                self.__max_heap.insertar(valor)
             else:
-                self.min_heap.insertar(valor)
+                self.__min_heap.insertar(valor)
             
             # Balancear los montículos
-            if self.max_heap.tamano() > self.min_heap.tamano() + 1:
-                self.min_heap.insertar(self.max_heap.extraer_maximo())
-            elif self.min_heap.tamano() > self.max_heap.tamano():
-                self.max_heap.insertar(self.min_heap.extraer_minimo())
+            if self.__max_heap.tamano() > self.__min_heap.tamano() + 1:
+                self.__min_heap.insertar(self.__max_heap.extraer_raiz())
+            elif self.__min_heap.tamano() > self.__max_heap.tamano():
+                self.__max_heap.insertar(self.__min_heap.extraer_raiz())
 
             # Actualizar la mediana
-            if self.max_heap.tamano() == self.min_heap.tamano():
-                self.mediana = (self.max_heap.raiz() + self.min_heap.raiz()) / 2
+            if self.__max_heap.tamano() == self.__min_heap.tamano():
+                self.__mediana = (self.__max_heap.raiz() + self.__min_heap.raiz()) / 2
             else:
-                self.mediana = self.max_heap.raiz()
+                self.__mediana = self.__max_heap.raiz()
 
     def obtener_mediana(self):
         """Devuelve la mediana actual."""
-        if not self.max_heap.tamano() and not self.min_heap.tamano():
+        if not self.__max_heap.tamano() and not self.__min_heap.tamano():
             return False  # No hay elementos
-        return self.mediana
+        return self.__mediana
 
 
 # Clases específicas para los reclamos
