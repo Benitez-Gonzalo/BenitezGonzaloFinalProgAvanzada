@@ -56,10 +56,10 @@ class TestMonticuloMediana(unittest.TestCase):
         monticulo.insertar(3)  # Insertamos 3
 
         # Assert
-        max_heap_mock.insertar.assert_called_once_with(3)  # Se inserta 3 en max_heap
-        max_heap_mock.extraer_raiz.assert_called_once()    # Se extrae 5
+        max_heap_mock.insertar.assert_called_once_with(3)  # Se inserta 3 en max_heap (por ser menor que la mediana, que es 5, se inserta en max_heap)
+        max_heap_mock.extraer_raiz.assert_called_once()    # Se extrae 5 (por ser mayor a uno la diferencia entre números de elementos en los montículos)
         min_heap_mock.insertar.assert_called_once_with(5)  # Se inserta 5 en min_heap
-        self.assertEqual(monticulo._MonticuloMediana__mediana, 4)  # Mediana: (3 + 5) / 2
+        self.assertEqual(monticulo._MonticuloMediana__mediana, 4)  # Mediana: (3 + 5) / 2 (la mediana es el promedio porque los dos montículos tienen la misma cantidad de elementos)
         
     def test_obtener_mediana_devuelve_false_cuando_vacio(self):
         # Arrange
@@ -89,7 +89,7 @@ class TestMonticuloMediana(unittest.TestCase):
 
         # Simulamos un estado con elementos
         max_heap_mock.tamano.return_value = 1
-        min_heap_mock.tamano.return_value = 0  # No se usa debido al cortocircuito
+        min_heap_mock.tamano.return_value = 0  # No se usa
         monticulo = MonticuloMediana()
         monticulo._MonticuloMediana__max_heap = max_heap_mock
         monticulo._MonticuloMediana__min_heap = min_heap_mock
@@ -101,7 +101,7 @@ class TestMonticuloMediana(unittest.TestCase):
         # Assert
         self.assertEqual(resultado, 5)  # La mediana sigue siendo 5
         max_heap_mock.tamano.assert_called_once()  # Se llama porque se evalúa primero
-        min_heap_mock.tamano.assert_not_called()  # No se llama por cortocircuito
+        min_heap_mock.tamano.assert_not_called()  # No se llama
 
 if __name__ == '__main__':
     unittest.main()

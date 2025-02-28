@@ -1,32 +1,23 @@
 
 import fpdf
-from abc import ABC, abstractmethod
-
-class Reporte(ABC):
+from modules.clasesAbstractas import ReporteAbstracto
+    
+class ReportePDF(ReporteAbstracto):
     def __init__(self):
         pass
     
-    @abstractmethod
-    def generarReporte(self,ruta_documento:str,ruta_imagen:str):
-        raise NotImplementedError
-    
-
-class ReportePDF(Reporte):
-    def __init__(self):
-        pass
-    
-    def generarReporte(self,ruta_documento:str,ruta_imagen:str):
+    def generarArchivo(self,ruta_documento:str,ruta_imagen:str):
         pdf = fpdf.FPDF(orientation='P', unit='mm', format='A4')
         pdf.add_page()
         pdf.image(ruta_imagen, type='JPG', x=10, y=40, w=190)  
         pdf.output(ruta_documento)
         
 
-class ReporteHTML(Reporte):
+class ReporteHTML(ReporteAbstracto):
     def __init__(self):
         pass
              
-    def generarReporte(self,ruta_documento:str,ruta_imagen:str):
+    def generarArchivo(self,ruta_documento:str,ruta_imagen:str):
         """
         Genera un archivo HTML que incluye las imágenes generadas.
         

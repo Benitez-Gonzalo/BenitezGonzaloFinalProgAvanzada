@@ -10,7 +10,7 @@ import pickle
 from sqlalchemy import func
 from modules.dominio import Usuario,Reclamo
 from modules.modelos import ModeloReclamo,ModeloUsuario,asociacion_usuarios_reclamos
-from modules.repositorioAbstracto import RepositorioAbstracto
+from modules.clasesAbstractas import RepositorioAbstracto
 
 
 class RepositorioReclamosSQLAlchemy(RepositorioAbstracto):

@@ -19,19 +19,7 @@ class Usuario:
         self.__email = pEmail
         self.__claustro = pClaustro
         self.__contraseña = pContraseña
-        
-        
-    def to_dict(self):
-        return {
-            "id":self.__id,
-            "nombre":self.__nombre,
-            "nombreDeUsuario": self.__nombreDeUsuario,
-            "email": self.__email,
-            "claustro": self.__claustro,
-            "contraseña": self.__contraseña,
-        } 
-        
-    
+          
     @property
     def nombreDeUsuario(self):
         return self.__nombreDeUsuario
@@ -98,18 +86,6 @@ class Reclamo:
         self.__tiempo_estimado = pTiempoEstimado
         self.__tiempo_ocupado = pTiempoOcupado
 
-    def to_dict(self):
-        return {
-            "id": self.__id_reclamo,
-            "reclamo": self.__contenido,
-            "clasificacion": self.__departamento,
-            "id_usuario": self.__id_usuario,
-            "fecha_de_creacion": self.__fechaYhora,
-            "estado": self.__estado,
-            "tiempo_estimado": self.__tiempo_estimado,
-            "tiempo_ocupado":self.__tiempo_ocupado
-        } 
-    
     @property
     def tiempo_ocupado(self):
         return self.__tiempo_ocupado

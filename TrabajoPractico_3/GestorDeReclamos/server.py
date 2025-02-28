@@ -198,7 +198,6 @@ def gestionar_usuario_final():
 @app.route("/crear_reclamo", methods=['GET', 'POST'])
 @gestor_login.se_requiere_login
 def crear_reclamo():
-    #Acá el usuario escribe y envía el reclamo
     if request.method == 'POST':
         reclamo = request.form.get("reclamo")
         id_usuario = session['user_id']
@@ -210,29 +209,25 @@ def crear_reclamo():
             flash("El reclamo no debe tener más de mil caracteres")
             return render_template("crear_reclamo.html")
     
-        # Llamar al gestor para agregar o encontrar reclamos similares
-        reclamos_similares_o_igual = gestor_reclamos.obtener_reclamo_similar('contenido',reclamo)
+        # Obtener reclamo idéntico y similares
+        reclamo_identico, reclamos_similares = gestor_reclamos.obtener_reclamo_similar('contenido', reclamo)
         
-        # Si el usuario ha presionado el botón "Crear nuevo reclamo" a pesar de haber reclamos similares
-        if 'nuevo_reclamo' in request.form:
-            gestor_reclamos.creación_reclamo(reclamo,id_usuario)
-            flash("Reclamo creado con éxito.")
-            return redirect(url_for('gestionar_usuario_final'))
-        # Si hay reclamos similares encontrados y el usuario no ha solicitado crear un reclamo nuevo
-        elif reclamos_similares_o_igual:
-
-            reclamo = request.form.get('reclamo') #Esto lo hace bien
-            print("El reclamo es", reclamo)
+        # Caso 1: Hay un reclamo idéntico
+        if reclamo_identico:
+            flash("No se puede crear el reclamo porque ya existe uno idéntico.")
+            return render_template("crear_reclamo.html")
+        
+        # Caso 2: Hay reclamos similares pero no idénticos
+        if reclamos_similares:
             flash("Existen reclamos similares. Puedes adherirte a uno de ellos en lugar de crear uno nuevo.")
             if 'adhesion_reclamo' in request.form:
                 return redirect(url_for('adherirse_a_reclamo_desde_creación'))
-            return render_template("crear_reclamo.html", reclamos_similares=reclamos_similares_o_igual)
-            
-        # Si no hay reclamos similares, creamos el reclamo nuevo
-        else:
-            gestor_reclamos.creación_reclamo(reclamo,id_usuario)
-            flash("Reclamo creado con éxito.")
-            return redirect(url_for('gestionar_usuario_final'))
+            return render_template("crear_reclamo.html", reclamos_similares=reclamos_similares)
+        
+        # Caso 3: No hay ni idéntico ni similares, crear directamente
+        gestor_reclamos.creación_reclamo(reclamo, id_usuario)
+        flash("Reclamo creado con éxito.")
+        return redirect(url_for('gestionar_usuario_final'))
 
     return render_template("crear_reclamo.html")
 

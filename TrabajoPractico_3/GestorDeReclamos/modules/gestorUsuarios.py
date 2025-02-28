@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from modules.repositorioAbstracto import RepositorioAbstracto
+from modules.clasesAbstractas import RepositorioAbstracto
 
 from modules.dominio import Usuario
   

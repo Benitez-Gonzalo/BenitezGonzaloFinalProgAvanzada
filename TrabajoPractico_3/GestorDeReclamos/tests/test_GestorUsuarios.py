@@ -1,7 +1,7 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, ANY, call
 from werkzeug.security import check_password_hash
-from modules.servicio import GestorUsuarios  # Asegúrate de importar la clase correctamente
+from modules.gestorUsuarios import GestorUsuarios  # Asegúrate de importar la clase correctamente
 from modules.dominio import Usuario  # La clase Usuario que se está utilizando en el método
 
 class TestGestorUsuarios(unittest.TestCase):
@@ -60,13 +60,10 @@ class TestGestorUsuarios(unittest.TestCase):
         self.assertNotEqual(usuario_guardado.contraseña, password)  # La contraseña no debe estar en texto plano
         self.assertTrue(check_password_hash(usuario_guardado.contraseña, password))  # Verificamos que la encriptación sea válida
 
-def test_registrar_nuevo_usuario_llamado_correctamente(self):
+    def test_registrar_nuevo_usuario_llamado_correctamente(self):
         """Verifica que los métodos del repositorio se llaman con los argumentos correctos."""
         # Arrange
-        # Configuramos el mock para que no haya usuarios existentes
         self.repo_mock.obtener_registro_por_filtro.return_value = None
-
-        # Datos de prueba
         nombre = "Juan Pérez"
         nombreDeUsuario = "jperez"
         email = "juan@ejemplo.com"
@@ -83,23 +80,25 @@ def test_registrar_nuevo_usuario_llamado_correctamente(self):
         )
 
         # Assert
-        # Verificamos que obtener_registro_por_filtro fue llamado dos veces con los argumentos correctos
         calls = [call('email', email), call('nombreDeUsuario', nombreDeUsuario)]
         self.repo_mock.obtener_registro_por_filtro.assert_has_calls(calls, any_order=True)
         self.assertEqual(self.repo_mock.obtener_registro_por_filtro.call_count, 2)
 
-        # Verificamos que guardar_registro fue llamado con un objeto Usuario correcto
-        usuario_esperado = Usuario(None, nombre, nombreDeUsuario, email, claustro, ANY)  # ANY para la contraseña encriptada
+        # Verificamos que guardar_registro fue llamado una vez y extraemos el argumento
         self.repo_mock.guardar_registro.assert_called_once()
         args, _ = self.repo_mock.guardar_registro.call_args
         usuario_guardado = args[0]
+
+        # Comparamos los atributos relevantes
         self.assertIsInstance(usuario_guardado, Usuario)
+        self.assertEqual(usuario_guardado.id, None)
         self.assertEqual(usuario_guardado.nombre, nombre)
         self.assertEqual(usuario_guardado.nombreDeUsuario, nombreDeUsuario)
         self.assertEqual(usuario_guardado.email, email)
         self.assertEqual(usuario_guardado.claustro, claustro)
+        # No verificamos la contraseña exacta porque es encriptada, pero podemos asegurar que existe
+        self.assertIsNotNone(usuario_guardado.contraseña)
 
-        # Verificamos que el método devuelve True
         self.assertTrue(resultado)
 
 if __name__ == '__main__':

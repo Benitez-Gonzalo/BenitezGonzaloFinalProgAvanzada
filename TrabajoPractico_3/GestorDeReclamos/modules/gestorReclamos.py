@@ -1,7 +1,7 @@
 from modules.dominio import Reclamo
 
 from datetime import datetime
-from modules.repositorioAbstracto import RepositorioAbstracto
+from modules.clasesAbstractas import RepositorioAbstracto
 from modules.persistencia import Clasificador
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -12,56 +12,46 @@ class GestorDeReclamos:
         self.__repo = repo
         self.clasificador = Clasificador()
         self.__numero_reclamos = len(self.__repo.obtener_todos_los_registros())
-        
-    def brindar_usuarios_adheridos_por_reclamo(self):
-        return self.__repo.obtener_usuarios_adheridos_por_reclamo()
-        
+             
     def obtener_reclamo_similar(self, filtro, valor):
-        """Chequea la existencia de reclamos similares al ingresado
+        """Chequea la existencia de reclamos similares o idénticos al ingresado
 
         Args:
-            filtro (str): categoría "contenido" del reclamo
-            valor (str): contenido del reclamo
+            filtro (str): Categoría "contenido" del reclamo
+            valor (str): Contenido del reclamo
 
         Returns:
-            list[Reclamos]
+            tuple: (reclamo_identico, reclamos_similares)
+                - reclamo_identico: Objeto Reclamo si hay uno idéntico, None si no
+                - reclamos_similares: Lista de reclamos similares si no hay idéntico, vacía si no hay similares
         """
-        # Recuperar todos los reclamos de la base de datos (sin aplicar filtro)
-        # modelos_reclamos es una lista de objetos
-        #modelos_reclamos = self.__repo.sesion().query(ModeloReclamo).all()
         reclamos = self.__repo.obtener_todos_los_registros()
         
-        # Si hay reclamos existentes, evaluamos la similitud
+        # Buscar reclamo idéntico
+        reclamo_identico = self.__repo.obtener_registro_por_filtro(filtro, valor)
+        if reclamo_identico:
+            print("El reclamo idéntico es: ", reclamo_identico.contenido)
+            return reclamo_identico, []  # Hay idéntico, no buscamos similares
+        
+        # Si no hay idéntico y hay reclamos, buscamos similares
         if reclamos:
-            print(f"Los datos del reclamo son", filtro, valor, "Y los reclamos son", {r.contenido for r in reclamos})
-            # Usamos TF-IDF para convertir los textos en vectores numéricos
             vectorizer = TfidfVectorizer(stop_words='english')
-            textos = [r.contenido for r in reclamos] + [valor]  # Todos los reclamos + el nuevo
-            
-            # Vectorizamos los textos
+            textos = [r.contenido for r in reclamos] + [valor]
             tfidf_matrix = vectorizer.fit_transform(textos)
-            
-            # Calculamos la similitud de coseno entre el nuevo reclamo y los existentes
             similitudes = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])
-
-            # Definir un umbral de similitud para considerar un reclamo como "similar"
-            umbral_similitud = 0.5  # Este valor se puede ajustar según tu criterio
-
-            reclamos_similares = []
-            for idx, sim in enumerate(similitudes[0]):
-                if sim > umbral_similitud:  # Si la similitud es mayor que el umbral
-                    reclamos_similares.append(reclamos[idx])
-
-            # Si se encontraron reclamos similares, devolverlos
+            umbral_similitud = 0.5  # Ajustable según necesidad
+            
+            reclamos_similares = [reclamos[idx] for idx, sim in enumerate(similitudes[0]) if sim > umbral_similitud]
             if reclamos_similares:
-                return reclamos_similares
-            else:
-                return []
+                for reclamo in reclamos_similares:
+                    print("Reclamos similares: ", reclamo.contenido)
+                return None, reclamos_similares
+            return None, []  # No hay ni idéntico ni similares
         
-        else:
-            # Busca un reclamo que sea identico al valor para asegurarse que el reclamo no exista previamente
-            return self.__repo.obtener_registro_por_filtro(filtro, valor)
-        
+        return None, []  # No hay reclamos en la base
+            
+    def brindar_usuarios_adheridos_por_reclamo(self):
+        return self.__repo.obtener_usuarios_adheridos_por_reclamo()    
         
     def devolver_reclamos_segun_departamento(self, departamento):
         if departamento:

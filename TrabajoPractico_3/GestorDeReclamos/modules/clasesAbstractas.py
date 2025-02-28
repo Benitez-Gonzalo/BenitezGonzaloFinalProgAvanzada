@@ -1,8 +1,9 @@
+
+from abc import ABC, abstractmethod
+
 """
 Esta clase es la clase madre de las clases "RepositorioUsuariosSQLAlchemy" y "RepositorioReclamosSQLAlchemy".
 """
-from abc import ABC, abstractmethod
-
 class RepositorioAbstracto(ABC):
     
     @abstractmethod
@@ -21,3 +22,12 @@ class RepositorioAbstracto(ABC):
     def modificar_registro(self,entidad_modificada):
         raise NotImplementedError
     
+    
+"""
+Esta clase es la clase madre de las clases "ReportePDF" y "ReporteHTML".
+"""
+class ReporteAbstracto(ABC):
+    
+    @abstractmethod
+    def generarArchivo(ruta_archivo:str,ruta_imagen:str):
+        raise NotImplementedError

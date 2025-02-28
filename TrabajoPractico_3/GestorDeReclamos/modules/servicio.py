@@ -7,25 +7,25 @@ la capa de servicio es decir, solo hacer llamadas a funciones de esta capa.
 """
 
 from modules.gestorReclamos import GestorDeReclamos
+from modules.gestorReportes import GestorReportes
 from modules.gestorUsuarios import GestorUsuarios
 from modules.gestorLogin import GestorLogin
-from modules.factoria import crear_repositorio
+from modules.factoria import crear_repositorio, crear_reportes
 from modules.config import login_manager
 from modules.monticuloMediana import MonticuloDeMedianaReclamosEnProceso,MonticuloDeMedianaReclamosResueltos
 from modules.graficador import Graficador
 from modules.gestorEstadistico import GestorEstadistico
-from modules.reporte import ReportePDF,ReporteHTML
 from flask import flash
 
 
 repo_reclamos,repo_usuarios = crear_repositorio()
+repoPDF,repoHTML = crear_reportes()
 gestor_usuarios = GestorUsuarios(repo_usuarios)
 gestor_login = GestorLogin(gestor_usuarios,login_manager)
 gestor_reclamos = GestorDeReclamos(repo_reclamos)
 pGestorEstadístico = GestorEstadistico(repo_reclamos)
+gestorReportes = GestorReportes(repoPDF,repoHTML)
 graficador = Graficador(pGestorEstadístico)
-reportePDF = ReportePDF()
-reporteHTML = ReporteHTML()
 
 
 mails_jefes_depto = ['maestranza@facultad.edu.ar','informatica@facultad.edu.ar']
@@ -75,14 +75,9 @@ def mostrar_analíticas(departamento=None):
             lista_tiempos_estimados, lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos() #Por si acaso
         for tiempo_estimado, tiempo_ocupado in zip(lista_tiempos_estimados, lista_tiempos_ocupados):
             monticuloReclamosEnProceso.insertar(tiempo_estimado)
-            print(tiempo_estimado)
             monticuloReclamosResueltos.insertar(tiempo_ocupado)
-            print(tiempo_ocupado)
         graficador.mostrarGraficas(ARCHIVOJPG, monticuloReclamosEnProceso.obtener_mediana(), monticuloReclamosResueltos.obtener_mediana(), departamento)
-        print(monticuloReclamosEnProceso.obtener_mediana())
-        print(monticuloReclamosResueltos.obtener_mediana())
-        reportePDF.generarReporte(ARCHIVOPDF, ARCHIVOJPG)
-        reporteHTML.generarReporte(ARCHIVOHTML, ARCHIVOJPG)
+        gestorReportes.generarReportes(ARCHIVOPDF,ARCHIVOHTML,ARCHIVOJPG)
     except:
         flash("No hay datos para generar las analíticas. Se muestra la última gráfica generada.")
 

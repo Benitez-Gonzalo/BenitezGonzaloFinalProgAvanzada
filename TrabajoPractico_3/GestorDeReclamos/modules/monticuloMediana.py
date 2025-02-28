@@ -1,6 +1,6 @@
 #La relación de MontículoMediana con MontículoMax y MontículoMin se da mediante duck typing (polimorfismo sin herencia)
 
-class MonticuloMax:
+class MonticuloMax():
     """Montículo de máximos implementado con un arreglo."""
     def __init__(self):
         self.__heap = []
@@ -54,7 +54,7 @@ class MonticuloMax:
         return len(self.__heap)
 
 
-class MonticuloMin:
+class MonticuloMin():
     """Montículo de mínimos implementado con un arreglo."""
     def __init__(self):
         self.__heap = []
