@@ -19,6 +19,16 @@ class Usuario:
         self.__email = pEmail
         self.__claustro = pClaustro
         self.__contraseña = pContraseña
+        
+    def to_dict(self):
+        return {
+            "id":self.__id,
+            "nombre":self.__nombre,
+            "nombreDeUsuario": self.__nombreDeUsuario,
+            "email": self.__email,
+            "claustro": self.__claustro,
+            "contraseña": self.__contraseña,
+        } 
           
     @property
     def nombreDeUsuario(self):

@@ -23,9 +23,8 @@ repoPDF,repoHTML = crear_reportes()
 gestor_usuarios = GestorUsuarios(repo_usuarios)
 gestor_login = GestorLogin(gestor_usuarios,login_manager)
 gestor_reclamos = GestorDeReclamos(repo_reclamos)
-pGestorEstadístico = GestorEstadistico(repo_reclamos)
 gestorReportes = GestorReportes(repoPDF,repoHTML)
-graficador = Graficador(pGestorEstadístico)
+graficador = Graficador(GestorEstadistico(repo_reclamos))
 
 
 mails_jefes_depto = ['maestranza@facultad.edu.ar','informatica@facultad.edu.ar']
@@ -60,7 +59,7 @@ def registrar(form_registro):
     
 
 def obtener_usuarios_adheridos_por_reclamo():
-    return repo_reclamos.obtener_usuarios_adheridos_por_reclamo()
+    return gestor_reclamos.brindar_usuarios_adheridos_por_reclamo()
 
 def listar_todos_los_reclamos():
     return repo_reclamos.obtener_todos_los_registros()

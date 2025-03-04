@@ -2,11 +2,11 @@ import re
 from collections import Counter
 from nltk.corpus import stopwords
 
-from modules.persistencia import RepositorioReclamosSQLAlchemy
+from modules.clasesAbstractas import RepositorioAbstracto
 
 
 class GestorEstadistico:
-    def __init__(self,pRepoReclamos:RepositorioReclamosSQLAlchemy):
+    def __init__(self,pRepoReclamos:RepositorioAbstracto):
         self.__repoReclamos = pRepoReclamos
         
 

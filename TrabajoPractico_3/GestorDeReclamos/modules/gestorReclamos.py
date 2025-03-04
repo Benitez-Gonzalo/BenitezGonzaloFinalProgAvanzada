@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 class GestorDeReclamos:
     def __init__(self,repo:RepositorioAbstracto):
         self.__repo = repo
-        self.clasificador = Clasificador()
+        self.__clasificador = Clasificador()
         self.__numero_reclamos = len(self.__repo.obtener_todos_los_registros())
              
     def obtener_reclamo_similar(self, filtro, valor):
@@ -94,7 +94,7 @@ class GestorDeReclamos:
 
     def creación_reclamo(self,contenido: str, id_usuario: str):
         """funcion que crea el reclamo y lo despacha para ser guardado en la base de datos"""
-        clasificacion = self.clasificador.clasificar_reclamo(contenido)[0]
+        clasificacion = self.__clasificador.clasificar_reclamo(contenido)[0]
         fecha_de_creacion= datetime.now()
         tiempo_estimado = 0
         tiempo_ocupado = 0
@@ -126,6 +126,3 @@ class GestorDeReclamos:
         # Guardar los cambios en la base de datos
         return self.__repo.modificar_registro(reclamo)
         
-    def clasificar(self,pClasificador:Clasificador,contenido):
-        clasificacion = pClasificador.clasificar_reclamo(contenido)
-        return clasificacion #La clasificación es el departamento al cual pertenece el reclamo

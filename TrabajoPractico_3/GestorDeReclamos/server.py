@@ -14,10 +14,10 @@ except:
     pass
 
 @app.template_filter('datetimeformat')
-def datetimeformat(value, format='%Y-%m-%d %H:%M:%S'):
+def datetimeformat(value, format='%d-%m-%Y %H:%M'):
     if isinstance(value, datetime):
         return value.strftime(format)
-    return value
+    return value 
 
 @app.route("/", methods = ["GET","POST"])
 def inicio():

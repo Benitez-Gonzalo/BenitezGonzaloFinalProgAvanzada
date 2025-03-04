@@ -7,7 +7,6 @@ por este cambio.
 #El manejo de los repositorios se hizo utilizando polimorfismo.
 
 import pickle
-from sqlalchemy import func
 from modules.dominio import Usuario,Reclamo
 from modules.modelos import ModeloReclamo,ModeloUsuario,asociacion_usuarios_reclamos
 from modules.clasesAbstractas import RepositorioAbstracto
@@ -163,7 +162,7 @@ class RepositorioUsuariosSQLAlchemy(RepositorioAbstracto):
     #----------------------------------------------------------------------------------------------------------------------------
     
     def modificar_registro(self,id_usuario,id_reclamo):
-        return self.asociar_registro(id_usuario,id_reclamo)
+        pass
     
     def obtener_todos_los_registros(self):
         modelo_usuarios = self.__session.query(ModeloUsuario).all()

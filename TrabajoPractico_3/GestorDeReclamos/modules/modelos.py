@@ -1,6 +1,6 @@
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, UniqueConstraint, func
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 Base = declarative_base() #Base es la clase base de la que heredan todos los modelos
