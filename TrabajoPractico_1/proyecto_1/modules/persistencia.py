@@ -67,7 +67,8 @@ def obtener_datos_para_gráfica(ruta_archivo:str):
                 linea = linea.strip().split(',')
                 lista_aciertos.append(int(linea[1]))
                 lista_errores.append(int(linea[2])- int(linea[1]))
-                lista_fechas.append(str(linea[3]))                       
+                lista_fechas.append(str(linea[3]))
+            #Uso defaultdict(int) para no tener que inicializar en cero el valor para cada clave (las fechas)                       
             aciertos_por_fecha = defaultdict(int)
             errores_por_fecha = defaultdict(int)
             for i, fecha in enumerate(lista_fechas):

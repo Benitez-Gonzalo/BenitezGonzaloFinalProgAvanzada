@@ -1,4 +1,4 @@
-from modules import Alimentos as A
+from modules.Alimentos import Alimento
 
 class CajonDeAlimento():
 
@@ -10,14 +10,14 @@ class CajonDeAlimento():
         self.__alimentos=[]
         
    
-    def agregar_alimento(self, alimento): 
+    def agregar_alimento(self, alimento:Alimento): 
         """Funcion que agrega a una lista, objetos 
         alimento
 
         """        
         self.__alimentos.append(alimento)
        
-#hago iterable el cajon para que pueda ser recorrido por el for en Calculadora
+    #hago iterable el cajon para que pueda ser recorrido por el for en Calculadora
     def __iter__(self) : 
         return iter(self.__alimentos) 
     

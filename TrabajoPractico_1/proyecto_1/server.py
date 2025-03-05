@@ -63,12 +63,15 @@ def jugar():
         pelicula_correcta=triada["pelicula"]
         opcion_elegida= int(request.form['opcion'])
         #triada["opciones"][opcion_elegida -1] es la opción correspondiente a la película correcta. El "-1" es porque se cuenta desde cero.
-        if triada["pelicula"] == triada["opciones"][opcion_elegida -1]:
+        if pelicula_correcta == triada["opciones"][opcion_elegida -1]:
             EsCorrecto = True
             aciertos = aciertos + 1
         else:
             EsCorrecto = False
-    Ronda = Ronda + 1   
+    Ronda = Ronda + 1
+    print("Las frases usadas son: ",frases_usadas)
+    print("Las peliculas usadas son: ",peliculas_usadas)
+    print("La cantidad de frases y pelis usadas es: ", len(frases_usadas),"y", len(peliculas_usadas)) 
     triada = servicio.hacer_triada(listadePeliculas,frases_usadas,peliculas_usadas)
     frases_usadas.append(triada["frase"])
     peliculas_usadas.add(triada["pelicula"])

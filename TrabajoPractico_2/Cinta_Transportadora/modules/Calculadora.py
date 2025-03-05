@@ -1,6 +1,5 @@
 #Clase que modela una calculadora para la aw de cada fruta, la aw_promedio, y si es aceptable o no la aw de algún alimento
 from modules import Alimentos as A
-import numpy as np
 from modules.CajonDeAlimentos import CajonDeAlimento
 
 class Calculadora():
@@ -8,7 +7,7 @@ class Calculadora():
     def __init__(self):
         self.alimentos = [] 
 
-    def aw_promedio(self, tipoAlimento,cajon): 
+    def aw_promedio(self, tipoAlimento,cajon:CajonDeAlimento): 
             """Funcion que devuelve la
             atividad acuosa promedio de
             un alimento particular

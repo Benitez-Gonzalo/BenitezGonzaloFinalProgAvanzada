@@ -1,4 +1,4 @@
-from modules.instituciones import Facultad, Curso, Departamento
+from modules.instituciones import Facultad
 from modules.recursos_humanos import Estudiante, Profesor
 import os
 
@@ -54,41 +54,68 @@ if __name__ == '__main__':
             if opcion == 1:
                 nombre=input("Ingrese el nombre del alumno: ")
                 DNI = input("Ingrese el DNI del alumno: ")
-                alumno = Estudiante(nombre,DNI)
-                facultad.agregarEstudiante(alumno)
+                if DNI in facultad.estudiantes:
+                    print("Operación fallida, el estudiante ya está inscripto")
+                else:
+                    alumno = Estudiante(nombre,DNI)
+                    facultad.agregarEstudiante(alumno)
                 print(facultad.estudiantes)
                 
             elif opcion == 2:
                 nombre=input("Ingrese el nombre del docente: ")
                 DNI=input("ingrese el DNI del docente: ")
-                docente=Profesor(nombre,DNI)
-                facultad.agregarDocente(docente)
+                if DNI in facultad.docentes:
+                    print("Operación fallida, el docente ya está inscripto a la facultad.")
+                else:
+                    docente=Profesor(nombre,DNI)
+                    facultad.agregarDocente(docente)
                 print(facultad.docentes)
                 
             elif opcion == 3:
                 nombre_depto = input("Ingrese el nombre del departamento: ")
+                if nombre_depto in facultad.deptos:
+                    print("Ya existe ese departamento. Operación fallida.")
+                    break
                 DNI_director = input("Ingrese el DNI del director de entre los docentes presentes: ")
                 if DNI_director in facultad.docentes:
                     facultad.crearDepartamento(nombre_depto,DNI_director)
-                    print(f"Los departamentos existentes son: {', '.join(facultad.deptos)}")        
+                    print(f"Los departamentos existentes son: {', '.join(facultad.deptos)}")    
+                else:
+                    print("El docente no se encuentra inscripto en la facultad.")        
                     
             elif opcion == 4:
                 nombre_depto = input("Ingrese el nombre del departamento donde va a agregar el curso: ")
-                curso_elegido = input("Ingrese el nombre del curso: ")
-                DNI_titular = input("Ingrese el DNI del titular de entre los docentes que trabajan en la facultad: ")
-                facultad.agregar_curso_a_depto(nombre_depto,curso_elegido,DNI_titular)
-                print(f"Los cursos presentes en el departamento son:{', '.join(facultad.mostrar_cursos_de_un_depto(nombre_depto))}")
+                if nombre_depto in facultad.deptos:
+                    curso_elegido = input("Ingrese el nombre del curso: ")
+                    DNI_titular = input("Ingrese el DNI del titular de entre los docentes que trabajan en la facultad: ")
+                    if DNI_titular in facultad.docentes:
+                        facultad.agregar_curso_a_depto(nombre_depto,curso_elegido,DNI_titular)
+                        print(f"Los cursos presentes en el departamento son:{', '.join(facultad.mostrar_cursos_de_un_depto(nombre_depto))}")
+                    else:
+                        print("Ese docente no se encuentra inscripto en la facultad, no se pudo realizar la operación.")
+                else:
+                    print("No existe ese departamento, no se pudo realizar la operación.")
 
             elif opcion == 5:
                 DNI_estudiante = input("Ingrese el DNI del estudiante a inscribir de entre los estudiantes inscriptos a la facultad: ")
-                nombre_depto = input("Ingrese el nombre del departamento donde está el curso de interés: ")
-                nombre_curso = input("Ingrese el nombre del curso de interés: ")
-                facultad.inscribir_estudiante_a_un_curso(DNI_estudiante,nombre_depto,nombre_curso)
-                print("El estudiante está inscripto a: ")
-                print(f"{facultad.mostrar_cursos_de_un_estudiante(DNI_estudiante)}")
+                if DNI_estudiante not in facultad.estudiantes:
+                    print("El estudiante no se encuentra inscripto a la facultad.")
+                else:
+                    nombre_depto = input("Ingrese el nombre del departamento donde está el curso de interés: ")
+                    if nombre_depto not in facultad.deptos:
+                        print("No existe ese departamento.")
+                    else:
+                        nombre_curso = input("Ingrese el nombre del curso de interés: ")
+                        if nombre_curso not in facultad.mostrar_cursos_de_un_depto(nombre_depto):
+                            print("Ese curso no está presente en el departamento.")
+                        else:
+                            facultad.inscribir_estudiante_a_un_curso(DNI_estudiante,nombre_depto,nombre_curso)
+                            print(f"El estudiante está inscripto a: {facultad.mostrar_cursos_de_un_estudiante(DNI_estudiante)}")
+            
             elif opcion == 6:
                 print("Saliendo del sistema.")
                 break
+            
             else:
                 print("Opción inválida.")
         except ValueError:
