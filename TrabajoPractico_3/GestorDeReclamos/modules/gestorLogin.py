@@ -38,7 +38,6 @@ class GestorLogin:
     def usuario_autenticado(self):
         return current_user.is_authenticated
 
-
     def cargar_usuario_actual(self, id_usuario):
         dicc_usuario = self.__gestor_usuarios.cargar_usuario(id_usuario)
         return FlaskLoginUser(dicc_usuario)

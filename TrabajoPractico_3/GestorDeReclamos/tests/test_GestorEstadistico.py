@@ -17,16 +17,7 @@ class TestGestorEstadistico(unittest.TestCase):
         reclamo1 = Reclamo(1,"Problema con PC","soporte informático","en proceso",datetime(2023, 1, 1),1,5,None)
         reclamo2 = Reclamo(2,"Falla de red","soporte informático","pendiente",datetime(2023, 1, 2),2,3,None)
         reclamo3 = Reclamo(3,"Limpieza necesaria","maestranza","resuelto",datetime(2023, 1, 3),3,2,2)
-        reclamo4 = Reclamo(
-            p_id_reclamo=4,
-            pContenido="Reclamo inválido",
-            pDepartamento="soporte",
-            pEstado="inválido",
-            pFechayHora=datetime(2023, 1, 4),
-            pId_usuario=4,
-            pTiempoEstimado=None,
-            pTiempoOcupado=None
-        )
+        reclamo4 = Reclamo(4,"Reclamo inválido","soporte","inválido",datetime(2023, 1, 4),4,None,None)
         self.repo_mock.obtener_todos_los_registros.return_value = [reclamo1, reclamo2, reclamo3, reclamo4]
 
         # Act

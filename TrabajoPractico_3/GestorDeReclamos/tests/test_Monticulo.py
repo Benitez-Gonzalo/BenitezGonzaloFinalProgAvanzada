@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from modules.monticuloMediana import MonticuloMediana, MonticuloMax, MonticuloMin  # Ajusta según tu estructura
+from modules.monticuloMediana import MonticuloMediana, MonticuloMax, MonticuloMin  
 
 class TestMonticuloMediana(unittest.TestCase):
     def test_insertar_primer_valor_actualiza_mediana(self):

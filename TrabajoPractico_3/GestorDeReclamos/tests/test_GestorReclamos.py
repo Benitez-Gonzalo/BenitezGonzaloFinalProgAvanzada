@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock,patch
 from datetime import datetime
-from modules.gestorReclamos import GestorDeReclamos, Reclamo  # Ajusta los nombres según tu proyecto
+from modules.gestorReclamos import GestorDeReclamos, Reclamo 
 
 class TestGestorDeReclamos(unittest.TestCase):
     
@@ -40,7 +40,7 @@ class TestGestorDeReclamos(unittest.TestCase):
         # Arrange
         clasificador_mock = MagicMock()
         self.repo_mock.obtener_todos_los_registros.return_value = []
-        self.gestor.clasificador = clasificador_mock
+        self.gestor._GestorDeReclamos__clasificador = clasificador_mock
         contenido = "Problema con mi computadora"
         id_usuario = "1"
         clasificacion_simulada = ["soporte informático"]

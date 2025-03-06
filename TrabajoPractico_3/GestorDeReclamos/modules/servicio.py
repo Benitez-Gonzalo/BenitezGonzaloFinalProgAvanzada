@@ -24,7 +24,7 @@ gestor_usuarios = GestorUsuarios(repo_usuarios)
 gestor_login = GestorLogin(gestor_usuarios,login_manager)
 gestor_reclamos = GestorDeReclamos(repo_reclamos)
 gestorReportes = GestorReportes(repoPDF,repoHTML)
-graficador = Graficador(GestorEstadistico(repo_reclamos))
+graficador = Graficador(GestorEstadistico(repo_reclamos)) #Lo más adecuado sería que recibiera los parámetros que ofrece GestorEstadistico en lugar de recibir directamente un GestorEstadistico
 
 
 mails_jefes_depto = ['maestranza@facultad.edu.ar','informatica@facultad.edu.ar']
@@ -116,11 +116,11 @@ def actualizar_reclamo(id_reclamo, nuevo_departamento, nuevo_estado, tiempo_esti
     return gestor_reclamos.modificar_reclamo(id_reclamo, **kwargs)
             
 def cantidad_adheridos_por_reclamo():
-    diccionario_usuarios_adheridos = gestor_reclamos.brindar_usuarios_adheridos_por_reclamo()
     """
     Recibe un diccionario con IDs de reclamos como claves y listas de IDs de usuarios adheridos como valores.
     Retorna un nuevo diccionario con los IDs de reclamos como claves y la cantidad de adheridos como valores.
     """
+    diccionario_usuarios_adheridos = gestor_reclamos.brindar_usuarios_adheridos_por_reclamo()
     return {reclamo_id: len(usuarios) for reclamo_id, usuarios in diccionario_usuarios_adheridos.items()}
 
 

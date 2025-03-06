@@ -8,6 +8,8 @@ import nltk
 nltk.download('punkt')
 nltk.download('punkt_tab')
 
+#Consultas: Preguntar si es correcto que se comuniquen los gestores con el server, preguntar por los test y por si los tipos de relaciones en el UML están bien.
+
 try:
     registrar_jefes(mails_jefes_depto,mail_sec_tecnico)
 except:

@@ -11,10 +11,17 @@ class GestorUsuarios:
         """Registra un nuevo usuario
 
         Args:
-            Datos del usuario
+            nombre (str): Nombre de la persona que se está registrando.
+            nombreDeUsuario (str): Nombre del usuario que está creando la persona.
+            email (str): email
+            claustro (str): Estudiante, docente o PAyS
+            password (str): contraseña
 
         Raises:
-            ValueError: El usuario ya se registró antes
+            ValueError: En caso de que ya esté registrado el usuario
+
+        Returns:
+            True: En caso de que el registro sea exitoso
         """
         if self.__repo.obtener_registro_por_filtro("email",email) or self.__repo.obtener_registro_por_filtro('nombreDeUsuario', nombreDeUsuario):
             raise ValueError("El usuario ya está registrado")
@@ -41,13 +48,15 @@ class GestorUsuarios:
         ]
         
     def autenticar_usuario(self, email:str, password:str):
-        """Se encarga del loguin
+        """Se encarga del loguin de los usuarios
 
         Args:
-            Pide email y contraseña
+            email (str): email del usuario
+            password (str): contraseña del usuario
 
         Returns:
-            dict[str,str]: Usuario en forma de diccionario
+            dict : Diccionario con la información del usuario
+            False: Si el loguin falló, ya sea porque no se encontró el usuario o falló la contraseña.
         """
         usuario = self.__repo.obtener_registro_por_filtro("email", email)
         if not usuario:

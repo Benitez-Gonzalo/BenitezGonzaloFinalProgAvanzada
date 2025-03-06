@@ -89,7 +89,6 @@ class RepositorioReclamosSQLAlchemy(RepositorioAbstracto):
         return [self.__map_modelo_a_entidad(reclamo) for reclamo in modelos_reclamo] if modelos_reclamo else None 
     
     def obtener_registro_por_filtro(self, filtro, valor):
-        print("El id del usuario en la función filtradora es", valor)
         modelo_reclamo = self.__session.query(ModeloReclamo).filter_by(**{filtro:valor}).first()
         return self.__map_modelo_a_entidad(modelo_reclamo) if modelo_reclamo else None
         

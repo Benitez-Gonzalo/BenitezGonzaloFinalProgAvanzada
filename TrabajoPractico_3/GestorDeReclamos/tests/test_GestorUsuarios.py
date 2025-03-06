@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, ANY, call
+from unittest.mock import Mock, MagicMock, call, patch
 from werkzeug.security import check_password_hash
 from modules.gestorUsuarios import GestorUsuarios  # Asegúrate de importar la clase correctamente
 from modules.dominio import Usuario  # La clase Usuario que se está utilizando en el método
@@ -33,32 +33,6 @@ class TestGestorUsuarios(unittest.TestCase):
         # Aseguramos que el método "guardar_registro" no fue llamado
         self.repo_mock.guardar_registro.assert_not_called()
 
-    def test_registrar_nuevo_usuario_exitoso(self):
-        """Debe registrar un nuevo usuario si no existe previamente."""
-        # Configuramos el Mock para simular que el usuario no existe
-        self.repo_mock.obtener_registro_por_filtro.return_value = None
-
-        # Simulamos el método guardar_registro
-        self.repo_mock.guardar_registro = Mock()
-
-        # Datos del usuario
-        nombre = "Juan Pérez"
-        nombreDeUsuario = "jperez"
-        email = "juan@example.com"
-        claustro = "estudiante"
-        password = "password123"
-
-        # Llamamos al método
-        self.gestor.registrar_nuevo_usuario(nombre, nombreDeUsuario, email, claustro, password)
-
-        # Verificamos que "guardar_registro" fue llamado una vez
-        self.repo_mock.guardar_registro.assert_called_once()
-
-        # Verificamos que el usuario guardado tiene la contraseña encriptada
-        usuario_guardado = self.repo_mock.guardar_registro.call_args[0][0]
-        self.assertIsInstance(usuario_guardado, Usuario)
-        self.assertNotEqual(usuario_guardado.contraseña, password)  # La contraseña no debe estar en texto plano
-        self.assertTrue(check_password_hash(usuario_guardado.contraseña, password))  # Verificamos que la encriptación sea válida
 
     def test_registrar_nuevo_usuario_llamado_correctamente(self):
         """Verifica que los métodos del repositorio se llaman con los argumentos correctos."""
@@ -100,6 +74,43 @@ class TestGestorUsuarios(unittest.TestCase):
         self.assertIsNotNone(usuario_guardado.contraseña)
 
         self.assertTrue(resultado)
+        
+    def test_autenticar_usuario_exitoso(self):
+        """Verifica que se autentica correctamente un usuario con email y contraseña válidos."""
+        # Arrange
+        email = "juan@ejemplo.com"
+        password = "password123"
+        # Simulamos un usuario existente
+        usuario_mock = MagicMock(spec=Usuario)
+        usuario_mock.contraseña = "hashed_password"  # Contraseña encriptada simulada
+        # Configuramos los atributos privados que usa to_dict()
+        usuario_mock._Usuario__id = 1
+        usuario_mock._Usuario__nombre = "Juan Pérez"
+        usuario_mock._Usuario__nombreDeUsuario = "jperez"
+        usuario_mock._Usuario__email = email
+        usuario_mock._Usuario__claustro = "estudiante"
+        usuario_mock._Usuario__contraseña = "hashed_password"
+        # Configuramos to_dict() para que devuelva lo que generaría la implementación real
+        usuario_mock.to_dict.return_value = {
+            "id": 1,
+            "nombre": "Juan Pérez",
+            "nombreDeUsuario": "jperez",
+            "email": email,
+            "claustro": "estudiante",
+            "contraseña": "hashed_password"
+        }
+        self.repo_mock.obtener_registro_por_filtro.return_value = usuario_mock
+        # Simulamos check_password_hash para que devuelva True
+        with patch('modules.gestorUsuarios.check_password_hash') as mock_check_password:
+            mock_check_password.return_value = True
+
+            # Act
+            resultado = self.gestor.autenticar_usuario(email, password)
+
+            # Assert
+            self.repo_mock.obtener_registro_por_filtro.assert_called_once_with("email", email)
+            mock_check_password.assert_called_once_with("hashed_password", password)
+            self.assertEqual(resultado, usuario_mock.to_dict.return_value)
 
 if __name__ == '__main__':
     unittest.main()

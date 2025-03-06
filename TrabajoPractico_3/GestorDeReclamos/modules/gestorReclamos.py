@@ -29,8 +29,9 @@ class GestorDeReclamos:
         
         # Buscar reclamo idéntico
         reclamo_identico = self.__repo.obtener_registro_por_filtro(filtro, valor)
-        if reclamo_identico:
+        if reclamo_identico and reclamo_identico.estado != 'resuelto':
             print("El reclamo idéntico es: ", reclamo_identico.contenido)
+            print("El estado del reclamo idéntico es: ", reclamo_identico.estado)
             return reclamo_identico, []  # Hay idéntico, no buscamos similares
         
         # Si no hay idéntico y hay reclamos, buscamos similares
@@ -93,7 +94,15 @@ class GestorDeReclamos:
         return lista_tiempos_estimados,lista_tiempos_ocupados
 
     def creación_reclamo(self,contenido: str, id_usuario: str):
-        """funcion que crea el reclamo y lo despacha para ser guardado en la base de datos"""
+        """Crea un nuevo reclamo y lo guarda en la base de datos.
+        
+        Args:
+            contenido (str): El texto del reclamo que será clasificado y almacenado.
+            id_usuario (str): El identificador del usuario que crea el reclamo.
+
+        Returns:
+            None: La función no devuelve un valor explícito.
+        """
         clasificacion = self.__clasificador.clasificar_reclamo(contenido)[0]
         fecha_de_creacion= datetime.now()
         tiempo_estimado = 0
@@ -104,9 +113,13 @@ class GestorDeReclamos:
             
         
     def modificar_reclamo(self, id_reclamo, **kwargs):
-        """
-        Modifica un reclamo en función de los valores proporcionados en kwargs.
-        Solo actualiza los campos que se pasan explícitamente.
+        """Función que modifica un reclamo en la base de datos
+
+        Args:
+            id_reclamo (int): id del reclamo a modificar en la base de datos
+
+        Returns:
+            Reclamo: el reclamo modificado
         """
         # Obtener el reclamo actual de la base de datos
         reclamo = self.__repo.obtener_registro_por_filtro('id', id_reclamo)

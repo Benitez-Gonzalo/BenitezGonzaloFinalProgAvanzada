@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock
 from modules.persistencia import RepositorioReclamosSQLAlchemy 
 from modules.dominio import Reclamo
 from modules.modelos import ModeloReclamo,ModeloUsuario
@@ -15,16 +15,7 @@ class TestRepositorioReclamosSQLAlchemy(unittest.TestCase):
         """Verifica que un reclamo existente se actualiza correctamente y devuelve True."""
         # Arrange
         # Creamos un objeto Reclamo para simular el reclamo modificado
-        reclamo_modificado = Reclamo(
-            1,
-            "Problema con PC",
-            "soporte informático",
-            "en proceso",
-            "2023-01-01",
-            2,
-            5,
-            None
-        )
+        reclamo_modificado = Reclamo(1,"Problema con PC","soporte informático","en proceso","2023-01-01",2,5,None)
 
         # Creamos un mock para simular el registro existente en la base de datos
         registro_mock = MagicMock(spec=ModeloReclamo)

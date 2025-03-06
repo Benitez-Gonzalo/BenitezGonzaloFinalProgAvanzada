@@ -7,6 +7,12 @@ class ReportePDF(ReporteAbstracto):
         pass
     
     def generarArchivo(self,ruta_documento:str,ruta_imagen:str):
+        """
+        Genera un archivo PDF que incluye las imágenes generadas.
+        
+        :param ruta_imagen: Ruta de la imagen a incluir en el PDF (formato JPG, PNG, etc.).
+        :param ruta_documento: Ruta del archivo PDF a generar.
+        """
         pdf = fpdf.FPDF(orientation='P', unit='mm', format='A4')
         pdf.add_page()
         pdf.image(ruta_imagen, type='JPG', x=10, y=40, w=190)  
@@ -21,8 +27,8 @@ class ReporteHTML(ReporteAbstracto):
         """
         Genera un archivo HTML que incluye las imágenes generadas.
         
-        :param ruta_img: Ruta de la imagen a incluir en el HTML (formato JPG, PNG, etc.).
-        :param ruta_html: Ruta del archivo HTML a generar.
+        :param ruta_imagen: Ruta de la imagen a incluir en el HTML (formato JPG, PNG, etc.).
+        :param ruta_documento: Ruta del archivo HTML a generar.
         """
         ruta_img = "D:/Documentos D/Facultad/ProgAvanzadaPython/Práctica/BenitezGonzaloFinalProgAvanzada/TrabajoPractico_3/GestorDeReclamos/"+f"{ruta_imagen}"
         # Estructura básica del HTML
