@@ -31,7 +31,7 @@ class TestRepositorioUsuariosSQLAlchemy(unittest.TestCase):
         reclamo_mock.id = id_reclamo
         reclamo_query_mock.filter_by.return_value.first.return_value = reclamo_mock
 
-        # Configuramos las consultas con side_effect
+        # Configuramos las consultas con side_effect. Este bloque sirve para simular el estado del método .query() en la sesion de SQLAlchemy
         def query_side_effect(modelo):
             if modelo == asociacion_usuarios_reclamos:
                 return relacion_query_mock

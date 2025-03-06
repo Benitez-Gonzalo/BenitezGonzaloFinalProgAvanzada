@@ -44,7 +44,7 @@ class GestorUsuarios:
                 "contenido": reclamo.contenido,  
                 "estado": reclamo.estado,    
             }
-            for reclamo in modelo_usuario.reclamos_seguidos
+            for reclamo in modelo_usuario.reclamos
         ]
         
     def autenticar_usuario(self, email:str, password:str):
