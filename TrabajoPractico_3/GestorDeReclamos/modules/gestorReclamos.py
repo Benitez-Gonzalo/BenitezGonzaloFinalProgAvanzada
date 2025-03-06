@@ -93,7 +93,7 @@ class GestorDeReclamos:
             lista_tiempos_ocupados.append(reclamo.tiempo_ocupado)
         return lista_tiempos_estimados,lista_tiempos_ocupados
 
-    def creación_reclamo(self,contenido: str, id_usuario: str):
+    def crear_reclamo(self,contenido: str, id_usuario: str):
         """Crea un nuevo reclamo y lo guarda en la base de datos.
         
         Args:
@@ -113,13 +113,13 @@ class GestorDeReclamos:
             
         
     def modificar_reclamo(self, id_reclamo, **kwargs):
-        """Función que modifica un reclamo en la base de datos
+        """Función que modifica un reclamo
 
         Args:
-            id_reclamo (int): id del reclamo a modificar en la base de datos
+            id_reclamo (int): id del reclamo en la base de datos
 
         Returns:
-            Reclamo: el reclamo modificado
+            Reclamo: reclamo modificado
         """
         # Obtener el reclamo actual de la base de datos
         reclamo = self.__repo.obtener_registro_por_filtro('id', id_reclamo)

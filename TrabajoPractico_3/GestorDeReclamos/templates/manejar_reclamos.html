@@ -113,18 +113,24 @@
     <a href="{{ url_for('gestionar_jefes') }}">Volver</a>
     <script>
     function toggleTiempoCampos(idReclamo, estado) {
+        //Contenedores de los campos "tiempo estimado" y "tiempo ocupado"
         const tiempoEstimadoDiv = document.getElementById('tiempo_estimado_div_' + idReclamo);
         const tiempoOcupadoDiv = document.getElementById('tiempo_ocupado_div_' + idReclamo);
+        //Inputs de tiempo estimado y tiempo ocupado
         const tiempoEstimadoInput = document.getElementById('tiempo_estimado_' + idReclamo);
         const tiempoOcupadoInput = document.getElementById('tiempo_ocupado_' + idReclamo);
 
+        //tiempoEstimadoDiv.style.display = 'none';: Oculta el contenedor de tiempo estimado. tiempoOcupadoDiv.style.display = 'none';: Oculta el contenedor de tiempo ocupado.
         tiempoEstimadoDiv.style.display = 'none';
         tiempoOcupadoDiv.style.display = 'none';
+        //removeAttribute('required'): Quita el atributo required de ambos inputs, para que no sean obligatorios si están ocultos.
         tiempoEstimadoInput.removeAttribute('required');
         tiempoOcupadoInput.removeAttribute('required');
 
         if (estado === 'en proceso') {
+            //Se muestra el contenedor de tiempo estimado
             tiempoEstimadoDiv.style.display = 'block';
+            //El campo se hace obligatorio
             tiempoEstimadoInput.setAttribute('required', 'required');
         } else if (estado === 'resuelto') {
             tiempoOcupadoDiv.style.display = 'block';
@@ -132,7 +138,9 @@
         }
     }
 
+    //window.onload es un evento que se activa cuando la página termina de cargarse 
     window.onload = function() {
+        //Obtenemos los valores iniciales de los select
         const selects = document.querySelectorAll('select[name="nuevo_estado"]');
         selects.forEach(select => {
             const idReclamo = select.id.split('_')[2]; // Extrae el id_reclamo del id (nuevo_estado_ID)

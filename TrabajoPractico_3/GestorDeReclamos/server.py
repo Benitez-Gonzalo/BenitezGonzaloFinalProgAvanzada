@@ -8,8 +8,6 @@ import nltk
 nltk.download('punkt')
 nltk.download('punkt_tab')
 
-#Consultas: Preguntar si es correcto que se comuniquen los gestores con el server, preguntar por los test y por si los tipos de relaciones en el UML están bien.
-
 try:
     registrar_jefes(mails_jefes_depto,mail_sec_tecnico)
 except:
@@ -48,7 +46,7 @@ def login():
     form_login = FormLogin()
     if form_login.validate_on_submit():
         
-        usuario = gestor_usuarios.autenticar_usuario(form_login.email.data,form_login.contraseña.data)
+        usuario = autenticar_usuario(form_login.email.data,form_login.contraseña.data)
         if usuario:
             gestor_login.login_usuario(usuario)
         else:
@@ -98,7 +96,7 @@ def gestionar_jefes():
             if departamento == 'secretaría técnica': 
                 reclamos = listar_todos_los_reclamos()
             else: 
-                reclamos = gestor_reclamos.devolver_reclamos_segun_departamento(departamento)
+                reclamos = devolver_reclamos_segun_departamento(departamento)
             usuarios_adheridos_por_reclamo = gestor_reclamos.brindar_usuarios_adheridos_por_reclamo()
             #Modificación departamento del reclamo:
             if departamento=='secretaría técnica' and request.method == 'GET' and request.form.get('accion') == 'cambiar_departamento':
@@ -177,7 +175,7 @@ def gestionar_usuario_final():
     # Opción para listar todos los reclamos existentes o todos los reclamos de un departamento
     if request.method == 'POST' and request.form.get('accion') == 'listar_reclamos':
         departamento = request.form.get('departamento')
-        reclamos_existentes = gestor_reclamos.devolver_reclamos_segun_departamento(departamento)
+        reclamos_existentes = devolver_reclamos_segun_departamento(departamento)
         diccionario_cantidad_de_asociados = cantidad_adheridos_por_reclamo()
         
         # Adhesion a un reclamo
@@ -188,7 +186,7 @@ def gestionar_usuario_final():
 
     # Opción para listar solo los reclamos del usuario actual
     if request.method == 'GET' and request.args.get('accion') == 'reclamos_propios':
-        reclamos_del_usuario = gestor_usuarios.obtener_reclamos_del_usuario(session['user_id'])
+        reclamos_del_usuario = obtener_reclamos_del_usuario(session['user_id'])
         
         # Mostrar los reclamos creados o seguidos por el usuario
         return render_template("reclamos_propios.html", 
@@ -212,7 +210,7 @@ def crear_reclamo():
             return render_template("crear_reclamo.html")
     
         # Obtener reclamo idéntico y similares
-        reclamo_identico, reclamos_similares = gestor_reclamos.obtener_reclamo_similar('contenido', reclamo)
+        reclamo_identico, reclamos_similares = obtener_reclamo_similar('contenido', reclamo)
         
         # Caso 1: Hay un reclamo idéntico
         if reclamo_identico:
@@ -227,7 +225,7 @@ def crear_reclamo():
             return render_template("crear_reclamo.html", reclamos_similares=reclamos_similares)
         
         # Caso 3: No hay ni idéntico ni similares, crear directamente
-        gestor_reclamos.creación_reclamo(reclamo, id_usuario)
+        hacer_reclamo(reclamo, id_usuario)
         flash("Reclamo creado con éxito.")
         return redirect(url_for('gestionar_usuario_final'))
 
@@ -236,7 +234,7 @@ def crear_reclamo():
 @app.route("/adhesion_reclamo_creacion", methods = ["GET","POST"])
 @gestor_login.se_requiere_login
 def adherirse_a_reclamo_desde_creación():
-    resultado = gestor_usuarios.registrar_reclamo_a_seguir(session['user_id'],request.form.get('id_reclamo'))
+    resultado = registrar_reclamo_a_seguir(session['user_id'],request.form.get('id_reclamo'))
     if resultado:
         flash("Adhesión al reclamo exitosa.")
     else:
@@ -246,7 +244,7 @@ def adherirse_a_reclamo_desde_creación():
 @app.route("/adhesion_reclamo_lista", methods = ["GET","POST"])
 @gestor_login.se_requiere_login
 def adherirse_a_reclamo_desde_lista():
-    resultado = gestor_usuarios.registrar_reclamo_a_seguir(session['user_id'],request.args.get('id_reclamo'))
+    resultado = registrar_reclamo_a_seguir(session['user_id'],request.args.get('id_reclamo'))
     if resultado:
         flash("Adhesión al reclamo exitosa.")
     else:

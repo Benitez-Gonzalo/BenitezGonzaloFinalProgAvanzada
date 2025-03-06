@@ -82,6 +82,13 @@ def mostrar_analíticas(departamento=None):
 
 
 def actualizar_reclamo(id_reclamo, nuevo_departamento, nuevo_estado, tiempo_estimado, tiempo_ocupado):
+    
+    """
+    Función que actualiza los reclamos. Usamos kwargs para que la función "modificar_reclamo" acepte un conjunto dinámico de campos a actualizar.
+    Hacemos esto para que no se envíen parámetros "None" cuando no es necesario ingresar un tiempo estimado o un tiempo ocupado. Ya que al ocurrir esto
+    el valor que no se envía (que se manda como "None") borra de la base de datos el valor previo.
+    """
+    
     kwargs = {}
     
     if nuevo_departamento:
@@ -123,8 +130,23 @@ def cantidad_adheridos_por_reclamo():
     diccionario_usuarios_adheridos = gestor_reclamos.brindar_usuarios_adheridos_por_reclamo()
     return {reclamo_id: len(usuarios) for reclamo_id, usuarios in diccionario_usuarios_adheridos.items()}
 
-
+def autenticar_usuario(email,contraseña):
+    return gestor_usuarios.autenticar_usuario(email,contraseña)
     
+def devolver_reclamos_segun_departamento(departamento):
+    return gestor_reclamos.devolver_reclamos_segun_departamento(departamento)
+
+def obtener_reclamos_del_usuario(id_usuario):
+    return gestor_usuarios.obtener_reclamos_del_usuario(id_usuario)
+
+def obtener_reclamo_similar(categoria_contenido:str, reclamo):
+    return gestor_reclamos.obtener_reclamo_similar(categoria_contenido, reclamo)
+    
+def hacer_reclamo(reclamo, id_usuario):
+    return gestor_reclamos.crear_reclamo(reclamo, id_usuario)
+
+def registrar_reclamo_a_seguir(id_usuario,id_reclamo):
+    return gestor_usuarios.registrar_reclamo_a_seguir(id_usuario,id_usuario)
     
             
     
