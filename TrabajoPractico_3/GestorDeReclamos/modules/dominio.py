@@ -167,20 +167,3 @@ class Reclamo:
             if not isinstance(p_estado,str) or p_estado=="":
                 raise ValueError("El estado debe ser texto no vacío")
             self.__estado = p_estado
-            
-    
-
-#La composición entre "claims classifier " y "clasificador" radica en que "claims_classifier está guardado en la variable clf"
-
-    
-    
-    
-       
-    
-   
-
-
-
-
-    
-        

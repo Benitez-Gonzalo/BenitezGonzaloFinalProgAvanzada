@@ -73,8 +73,21 @@ class GestorDeReclamos:
             tuple: (lista_tiempos_estimados, lista_tiempos_ocupados)
         """
         reclamos = self.__repo.obtener_registros_por_filtro('clasificacion', departamento)
-        lista_tiempos_estimados = [reclamo.tiempo_estimado for reclamo in reclamos if reclamo.tiempo_estimado is not None]
-        lista_tiempos_ocupados = [reclamo.tiempo_ocupado for reclamo in reclamos if reclamo.tiempo_ocupado is not None]
+    
+        # Filtrar reclamos en proceso para tiempos estimados
+        lista_tiempos_estimados = [
+            reclamo.tiempo_estimado 
+            for reclamo in reclamos 
+            if reclamo.estado == "en proceso" and reclamo.tiempo_estimado is not None
+        ]
+        
+        # Filtrar reclamos resueltos para tiempos ocupados
+        lista_tiempos_ocupados = [
+            reclamo.tiempo_ocupado 
+            for reclamo in reclamos 
+            if reclamo.estado == "resuelto" and reclamo.tiempo_ocupado is not None
+        ]
+        
         return lista_tiempos_estimados, lista_tiempos_ocupados
     
     def obtener_tiempos(self):
@@ -85,13 +98,23 @@ class GestorDeReclamos:
         Returns:
             list[int]:tiempos estimados,list[int]:tiempos_ocupados
         """
-        reclamos = self.__repo.obtener_todos_los_registros() 
-        lista_tiempos_estimados=[]
-        lista_tiempos_ocupados=[]
-        for reclamo in reclamos:
-            lista_tiempos_estimados.append(reclamo.tiempo_estimado)
-            lista_tiempos_ocupados.append(reclamo.tiempo_ocupado)
-        return lista_tiempos_estimados,lista_tiempos_ocupados
+        reclamos = self.__repo.obtener_todos_los_registros()
+    
+        # Filtrar reclamos en proceso para tiempos estimados
+        lista_tiempos_estimados = [
+            reclamo.tiempo_estimado 
+            for reclamo in reclamos 
+            if reclamo.estado == "en proceso" and reclamo.tiempo_estimado is not None
+        ]
+        
+        # Filtrar reclamos resueltos para tiempos ocupados
+        lista_tiempos_ocupados = [
+            reclamo.tiempo_ocupado 
+            for reclamo in reclamos 
+            if reclamo.estado == "resuelto" and reclamo.tiempo_ocupado is not None
+        ]
+        
+        return lista_tiempos_estimados, lista_tiempos_ocupados
 
     def crear_reclamo(self,contenido: str, id_usuario: str):
         """Crea un nuevo reclamo y lo guarda en la base de datos.
@@ -105,8 +128,8 @@ class GestorDeReclamos:
         """
         clasificacion = self.__clasificador.clasificar_reclamo(contenido)[0]
         fecha_de_creacion= datetime.now()
-        tiempo_estimado = 0
-        tiempo_ocupado = 0
+        tiempo_estimado = None
+        tiempo_ocupado = None
         nuevo_reclamo = Reclamo(None, contenido, clasificacion,"pendiente", fecha_de_creacion, id_usuario, tiempo_estimado,tiempo_ocupado)
         self.__repo.guardar_registro(nuevo_reclamo)
         self.__numero_reclamos += 1

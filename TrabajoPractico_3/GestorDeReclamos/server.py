@@ -222,6 +222,9 @@ def crear_reclamo():
             flash("Existen reclamos similares. Puedes adherirte a uno de ellos en lugar de crear uno nuevo.")
             if 'adhesion_reclamo' in request.form:
                 return redirect(url_for('adherirse_a_reclamo_desde_creación'))
+            if 'nuevo_reclamo' in request.form:
+                hacer_reclamo(reclamo,id_usuario)
+                flash("Reclamo creado con éxito.")
             return render_template("crear_reclamo.html", reclamos_similares=reclamos_similares)
         
         # Caso 3: No hay ni idéntico ni similares, crear directamente

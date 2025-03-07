@@ -71,14 +71,17 @@ def mostrar_analíticas(departamento=None):
         if departamento:
             lista_tiempos_estimados, lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos_por_departamento(departamento)
         else:
-            lista_tiempos_estimados, lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos() #Por si acaso
-        for tiempo_estimado, tiempo_ocupado in zip(lista_tiempos_estimados, lista_tiempos_ocupados):
+            lista_tiempos_estimados, lista_tiempos_ocupados = gestor_reclamos.obtener_tiempos() 
+        for tiempo_estimado in lista_tiempos_estimados:
             monticuloReclamosEnProceso.insertar(tiempo_estimado)
+            print("CCCC",tiempo_estimado)
+        for tiempo_ocupado in lista_tiempos_ocupados:
             monticuloReclamosResueltos.insertar(tiempo_ocupado)
+            print("DDDD",tiempo_ocupado)
         graficador.mostrarGraficas(ARCHIVOJPG, monticuloReclamosEnProceso.obtener_mediana(), monticuloReclamosResueltos.obtener_mediana(), departamento)
         gestorReportes.generarReportes(ARCHIVOPDF,ARCHIVOHTML,ARCHIVOJPG)
     except:
-        flash("No hay datos para generar las analíticas. Se muestra la última gráfica generada.")
+        flash("No hay datos para generar las analíticas, se muestra la última gráfica generada. IMPORTANTE: Desestimar la gráfica, no corresponde a su solicitud.")
 
 
 def actualizar_reclamo(id_reclamo, nuevo_departamento, nuevo_estado, tiempo_estimado, tiempo_ocupado):
@@ -146,7 +149,7 @@ def hacer_reclamo(reclamo, id_usuario):
     return gestor_reclamos.crear_reclamo(reclamo, id_usuario)
 
 def registrar_reclamo_a_seguir(id_usuario,id_reclamo):
-    return gestor_usuarios.registrar_reclamo_a_seguir(id_usuario,id_usuario)
+    return gestor_usuarios.registrar_reclamo_a_seguir(id_usuario,id_reclamo)
     
             
     

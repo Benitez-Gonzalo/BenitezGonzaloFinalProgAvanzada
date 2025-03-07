@@ -26,6 +26,16 @@
                         <li>ID Usuario: {{ reclamo.id_usuario }}</li>
                         <li>Descripción: {{ reclamo.contenido }}</li>
                         <li>Estado: {{ reclamo.estado }}</li>
+                        {% if reclamo.tiempo_estimado == None %}
+                            <li>Tiempo estimado: -</li>
+                        {% elif reclamo.tiempo_estimado != None %}
+                            <li>Tiempo estimado: {{ reclamo.tiempo_estimado }}</li>
+                        {% endif %}
+                        {% if reclamo.tiempo_ocupado == None %}
+                            <li>Tiempo ocupado: -</li>
+                        {% elif reclamo.tiempo_ocupado != None %}
+                            <li>Tiempo ocupado: {{ reclamo.tiempo_ocupado }}</li>
+                        {% endif %}
                         <li>Fecha de creación: {{ reclamo.fecha_y_hora | datetimeformat }}</li>
                         <li>Departamento al que pertenece: {{ reclamo.departamento }}</li>
                         <li>ID de usuarios adheridos: {{ usuarios_adheridos[reclamo.id_reclamo] | join(", ")}}</li>

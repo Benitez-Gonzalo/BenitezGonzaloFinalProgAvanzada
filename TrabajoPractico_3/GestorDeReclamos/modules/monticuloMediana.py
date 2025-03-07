@@ -169,7 +169,7 @@ class MonticuloMediana:
     def obtener_mediana(self):
         """Devuelve la mediana actual."""
         if not self.__max_heap.tamano() and not self.__min_heap.tamano():
-            return False  # No hay elementos
+            return "No hay datos"
         return self.__mediana
 
 

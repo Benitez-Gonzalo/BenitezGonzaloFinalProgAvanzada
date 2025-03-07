@@ -61,7 +61,7 @@ class TestMonticuloMediana(unittest.TestCase):
         min_heap_mock.insertar.assert_called_once_with(5)  # Se inserta 5 en min_heap
         self.assertEqual(monticulo._MonticuloMediana__mediana, 4)  # Mediana: (3 + 5) / 2 (la mediana es el promedio porque los dos montículos tienen la misma cantidad de elementos)
         
-    def test_obtener_mediana_devuelve_false_cuando_vacio(self):
+    def test_obtener_mediana_devuelve_no_hay_datos_cuando_vacio(self):
         # Arrange
         max_heap_mock = MagicMock(spec=MonticuloMax)
         min_heap_mock = MagicMock(spec=MonticuloMin)
@@ -78,7 +78,7 @@ class TestMonticuloMediana(unittest.TestCase):
         resultado = monticulo.obtener_mediana()
 
         # Assert
-        self.assertFalse(resultado)
+        self.assertEqual(resultado,"No hay datos")
         max_heap_mock.tamano.assert_called_once()
         min_heap_mock.tamano.assert_called_once()
 

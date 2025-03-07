@@ -15,8 +15,8 @@ from modules.clasesAbstractas import RepositorioAbstracto
 class RepositorioReclamosSQLAlchemy(RepositorioAbstracto):
     def __init__(self, session):
         self.__session = session
-        tabla_reclamo = ModeloReclamo()
-        tabla_reclamo.metadata.create_all(self.__session.bind)
+        self.__tabla_reclamo = ModeloReclamo()
+        self.__tabla_reclamo.metadata.create_all(self.__session.bind)
     #el atributo metadata contiene informacion sobre el esquema de la base de datos(columnas,relaciones,etc)
     #bind referencia al motor que crea las tablas
     
@@ -78,9 +78,15 @@ class RepositorioReclamosSQLAlchemy(RepositorioAbstracto):
         registro.id_usuario = reclamo_modificado.id_usuario
         registro.fecha_de_creacion = reclamo_modificado.fecha_y_hora
         registro.estado = reclamo_modificado.estado
-        registro.tiempo_estimado = reclamo_modificado.tiempo_estimado
-        registro.tiempo_ocupado = reclamo_modificado.tiempo_ocupado
-        
+        if reclamo_modificado.estado == 'en proceso':
+            registro.tiempo_estimado = reclamo_modificado.tiempo_estimado
+            registro.tiempo_ocupado = None
+        elif reclamo_modificado.estado == 'resuelto':
+            registro.tiempo_ocupado = reclamo_modificado.tiempo_ocupado
+        else:
+            registro.tiempo_ocupado = None
+            registro.tiempo_estimado = None
+            
         self.__session.commit()
         return True  # Confirmación de éxito                                                                                                                             
     
@@ -121,8 +127,8 @@ class RepositorioReclamosSQLAlchemy(RepositorioAbstracto):
 class RepositorioUsuariosSQLAlchemy(RepositorioAbstracto):
     def __init__(self,session):
         self.__session = session
-        tablaUsuario = ModeloUsuario
-        tablaUsuario.metadata.create_all(self.__session.bind)
+        self.__tablaUsuario = ModeloUsuario()
+        self.__tablaUsuario.metadata.create_all(self.__session.bind)
         
     #Esta función se encarga de la asociación de usuarios y seguidores cuando el usuario decide adherirse a un reclamo
     #----------------------------------------------------------------------------------------------------------------------------       
@@ -217,7 +223,7 @@ class Clasificador:
     
     def clasificar_reclamo(self,contenido:str):
         with open('./data/claims_clf.pkl', 'rb') as archivo:
-            clf  = pickle.load(archivo)
+            clf  = pickle.load(archivo) #La composición entre "claims classifier " y "clasificador" radica en que "claims_classifier está guardado en la variable clf"    
         
             lista_reclamos = [contenido]
             clasificacion = clf.clasificar(lista_reclamos)
